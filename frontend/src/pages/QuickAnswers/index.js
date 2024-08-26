@@ -190,8 +190,7 @@ const QuickAnswers = () => {
       <ConfirmationModal
         title={
           deletingQuickAnswers &&
-          `${i18n.t("quickAnswers.confirmationModal.deleteTitle")} ${
-            deletingQuickAnswers.shortcut
+          `${i18n.t("quickAnswers.confirmationModal.deleteTitle")} ${deletingQuickAnswers.shortcut
           }?`
         }
         open={confirmModalOpen}

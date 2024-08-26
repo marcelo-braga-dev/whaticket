@@ -13,6 +13,7 @@ import {
   IconButton,
   Menu,
 } from "@material-ui/core";
+import WhatsAppIcon from "@material-ui/icons/WhatsApp";
 
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -37,7 +38,9 @@ const useStyles = makeStyles((theme) => ({
   },
 
   toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
+    paddingRight: 24, // keep right padding when drawer closed,
+    backgroundColor: "#25d366",
+    color: "white"
   },
   toolbarIcon: {
     display: "flex",
@@ -45,6 +48,8 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
     padding: "0 8px",
     minHeight: "48px",
+    backgroundColor: "#25d366",
+    color: "white"
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -68,7 +73,8 @@ const useStyles = makeStyles((theme) => ({
     display: "none",
   },
   title: {
-    flexGrow: 1,
+    flexGrow: 2,
+    marginLeft: 5
   },
   drawerPaper: {
     position: "relative",
@@ -178,7 +184,7 @@ const LoggedInLayout = ({ children }) => {
       >
         <div className={classes.toolbarIcon}>
           <IconButton onClick={() => setDrawerOpen(!drawerOpen)}>
-            <ChevronLeftIcon />
+            <ChevronLeftIcon color="white" />
           </IconButton>
         </div>
         <Divider />
@@ -210,6 +216,7 @@ const LoggedInLayout = ({ children }) => {
           >
             <MenuIcon />
           </IconButton>
+          <WhatsAppIcon />
           <Typography
             component="h1"
             variant="h6"
@@ -217,7 +224,7 @@ const LoggedInLayout = ({ children }) => {
             noWrap
             className={classes.title}
           >
-            WhaTicket
+            WhatsApp
           </Typography>
           {user.id && <NotificationsPopOver />}
 
