@@ -115,8 +115,8 @@ export const createContactApi = async (
 ): Promise<Response> => {
   const newContact: ContactData = req.body;
   const { whatsappId }: WhatsappData = req.body;
-  // const { userId } = req.body;
-  const userId = 1;
+  const { userId } = req.body;
+
   const numero = `${newContact.number}`;
 
   newContact.number = numero.replace(/[-\s]/g, "");
