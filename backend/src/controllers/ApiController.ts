@@ -14,9 +14,12 @@ import GetProfilePicUrl from "../services/WbotServices/GetProfilePicUrl";
 import SendWhatsAppMedia from "../services/WbotServices/SendWhatsAppMedia";
 import SendWhatsAppMessage from "../services/WbotServices/SendWhatsAppMessage";
 
+import Ticket from "../models/Ticket";
+import User from "../models/User";
+
 type WhatsappData = {
   whatsappId: number;
-}
+};
 
 type MessageData = {
   body: string;
@@ -50,23 +53,19 @@ const createContact = async (
 
   const contact = await CreateOrUpdateContactService(contactData);
 
-  let whatsapp:Whatsapp | null;
+  let whatsapp: Whatsapp | null;
 
-  if(whatsappId === undefined) {
+  if (whatsappId === undefined) {
     whatsapp = await GetDefaultWhatsApp();
   } else {
     whatsapp = await Whatsapp.findByPk(whatsappId);
 
-    if(whatsapp === null) {
+    if (whatsapp === null) {
       throw new AppError(`whatsapp #${whatsappId} not found`);
     }
   }
 
-  const createTicket = await FindOrCreateTicketService(
-    contact,
-    whatsapp.id,
-    1
-  );
+  const createTicket = await FindOrCreateTicketService(contact, whatsapp.id, 1);
 
   const ticket = await ShowTicketService(createTicket.id);
 
@@ -108,4 +107,60 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
   }
 
   return res.send();
+};
+
+export const createContactApi = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const newContact: ContactData = req.body;
+  const { whatsappId }: WhatsappData = req.body;
+  // const { userId } = req.body;
+  const userId = 1;
+  const numero = `${newContact.number}`;
+
+  newContact.number = numero.replace(/[-\s]/g, "");
+
+  const schema = Yup.object().shape({
+    number: Yup.string()
+      .required()
+      .matches(/^\d+$/, "Invalid number format. Only numbers is allowed.")
+  });
+
+  try {
+    await schema.validate(newContact);
+    const contactAndTicket = await createContact(whatsappId, newContact.number);
+
+    // Verificar se o usuário existe
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuário não encontrado" });
+    }
+
+    const ticket = await Ticket.findByPk(contactAndTicket.id);
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket não encontrado" });
+    }
+
+    // Atribuir o ticket ao usuário e abrir o ticket
+    ticket.userId = userId;
+    ticket.status = "open";
+    await ticket.save();
+
+    return res.status(201).json({
+      message: "Contato cadastrado com sucesso!",
+      data: contactAndTicket
+    });
+  } catch (err: any) {
+    // Capturando erros de validação ou de criação e enviando uma resposta de erro
+    if (err instanceof Yup.ValidationError) {
+      return res.status(400).json({ message: err.message });
+    }
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({ message: err.message });
+    }
+    // Erro genérico para situações inesperadas
+    console.error("Unexpected error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };

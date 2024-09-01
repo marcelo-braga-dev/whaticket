@@ -5,6 +5,7 @@ import { useState } from "react";
 
 const LS_NAME = 'audioMessageRate';
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default function({url}) {
     const audioRef = useRef(null);
     const [audioRate, setAudioRate] = useState( parseFloat(localStorage.getItem(LS_NAME) || "1") );

@@ -15,11 +15,19 @@ import { logger } from "./utils/logger";
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 const app = express();
+const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',');
 
 app.use(
   cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL
+    origin: (origin, callback) => {
+      // Checa se `origin` é uma string e se está na lista de permitidos
+      if (typeof origin === 'string' && allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'), false);
+      }
+    }
   })
 );
 app.use(cookieParser());
