@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
 import { useParams, useHistory } from "react-router-dom";
 
 import { toast } from "react-toastify";
@@ -16,6 +16,7 @@ import MessagesList from "../MessagesList";
 import api from "../../services/api";
 import { ReplyMessageProvider } from "../../context/ReplyingMessage/ReplyingMessageContext";
 import toastError from "../../errors/toastError";
+import {AuthContext} from "../../context/Auth/AuthContext";
 
 const drawerWidth = 320;
 
@@ -82,6 +83,8 @@ const Ticket = () => {
   const [loading, setLoading] = useState(true);
   const [contact, setContact] = useState({});
   const [ticket, setTicket] = useState({});
+
+  const {user} = useContext(AuthContext);
 
   useEffect(() => {
     setLoading(true);
@@ -160,15 +163,17 @@ const Ticket = () => {
               onClick={handleDrawerOpen}
             />
           </div>
-          <div className={classes.ticketActionButtons}>
-            <TicketActionButtons ticket={ticket} />
-          </div>
+          {user.profile !== "user" && <div className={classes.ticketActionButtons}>
+            <TicketActionButtons ticket={ticket}/>
+          </div>}
         </TicketHeader>
         <ReplyMessageProvider>
+          {/*area mensagem*/}
           <MessagesList
             ticketId={ticketId}
             isGroup={ticket.isGroup}
           ></MessagesList>
+          {/*area digitar mensagem*/}
           <MessageInput ticketStatus={ticket.status} />
         </ReplyMessageProvider>
       </Paper>
