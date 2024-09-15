@@ -15,7 +15,8 @@ import { logger } from "./utils/logger";
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 const app = express();
-const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',');
+
+const allowedOrigins = (process.env.FRONTEND_URL || '').split(',');
 
 app.use(
   cors({
@@ -25,11 +26,12 @@ app.use(
       if (typeof origin === 'string' && allowedOrigins.includes(origin) || !origin) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'), false);
+        callback(new Error('Not allowed by CORS: ' + origin), false);
       }
     }
   })
 );
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(Sentry.Handlers.requestHandler());
