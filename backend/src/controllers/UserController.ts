@@ -106,3 +106,29 @@ export const remove = async (
 
   return res.status(200).json({ message: "User deleted" });
 };
+
+export const apiStore = async (req: Request, res: Response): Promise<Response> => {
+
+  const { email, password, name, profile, queueIds, whatsappId } = req.body;
+
+  if ((await CheckSettingsHelper("userCreation")) === "disabled") {
+    throw new AppError("ERR_USER_CREATION_DISABLED", 403);
+  }
+
+  const user = await CreateUserService({
+    email,
+    password,
+    name,
+    profile,
+    queueIds,
+    whatsappId
+  });
+
+  const io = getIO();
+  io.emit("user", {
+    action: "create",
+    user
+  });
+
+  return res.status(200).json(user);
+};

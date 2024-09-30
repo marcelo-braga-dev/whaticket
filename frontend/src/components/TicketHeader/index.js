@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TicketHeader = ({ loading, children }) => {
+const TicketHeader = ({ chat, loading, children }) => {
   const classes = useStyles();
   const history = useHistory();
   const handleBack = () => {
@@ -31,9 +31,11 @@ const TicketHeader = ({ loading, children }) => {
         <TicketHeaderSkeleton />
       ) : (
         <Card square className={classes.ticketHeader}>
-          <Button color="primary" onClick={handleBack}>
-            <ArrowBackIos />
-          </Button>
+          {!chat && (
+            <Button color="primary" onClick={handleBack}>
+              <ArrowBackIos />
+            </Button>
+          )}
           {children}
         </Card>
       )}

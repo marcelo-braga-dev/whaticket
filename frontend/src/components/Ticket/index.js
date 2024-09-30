@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 
 import { toast } from "react-toastify";
@@ -16,7 +16,7 @@ import MessagesList from "../MessagesList";
 import api from "../../services/api";
 import { ReplyMessageProvider } from "../../context/ReplyingMessage/ReplyingMessageContext";
 import toastError from "../../errors/toastError";
-import {AuthContext} from "../../context/Auth/AuthContext";
+import { AuthContext } from "../../context/Auth/AuthContext";
 
 const drawerWidth = 320;
 
@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Ticket = () => {
+const Ticket = ({ chat }) => {
   const { ticketId } = useParams();
   const history = useHistory();
   const classes = useStyles();
@@ -84,7 +84,7 @@ const Ticket = () => {
   const [contact, setContact] = useState({});
   const [ticket, setTicket] = useState({});
 
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     setLoading(true);
@@ -155,7 +155,7 @@ const Ticket = () => {
           [classes.mainWrapperShift]: drawerOpen,
         })}
       >
-        <TicketHeader loading={loading}>
+        <TicketHeader loading={loading} chat={chat}>
           <div className={classes.ticketInfo}>
             <TicketInfo
               contact={contact}
@@ -163,9 +163,11 @@ const Ticket = () => {
               onClick={handleDrawerOpen}
             />
           </div>
-          {user.profile !== "user" && <div className={classes.ticketActionButtons}>
-            <TicketActionButtons ticket={ticket}/>
-          </div>}
+          {user.profile !== "user" && (
+            <div className={classes.ticketActionButtons}>
+              <TicketActionButtons ticket={ticket} />
+            </div>
+          )}
         </TicketHeader>
         <ReplyMessageProvider>
           {/*area mensagem*/}
