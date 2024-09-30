@@ -216,7 +216,7 @@ const LoggedInLayout = ({ children }) => {
         color={process.env.NODE_ENV === "development" ? "inherit" : "primary"}
       >
         <Toolbar variant="dense" className={classes.toolbar}>
-          <IconButton
+          {/* <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
@@ -227,7 +227,7 @@ const LoggedInLayout = ({ children }) => {
             )}
           >
             <MenuIcon color="red" />
-          </IconButton>
+          </IconButton> */}
           {/*<WhatsAppIcon/>*/}
 
           <Typography
@@ -239,7 +239,7 @@ const LoggedInLayout = ({ children }) => {
             className={classes.title}
           >
             <img
-              style={{ paddingTop: 10, maxHeight: 50 }}
+              style={{ paddingTop: 2, maxHeight: 40 }}
               alt="logo"
               src="/assets/logo.png"
             />
