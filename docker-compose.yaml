@@ -11,6 +11,13 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: "3" # Permitir que use até 1.5 núcleos
+          memory: 4G # Limitar a 1.5GB de RAM
+        reservations:
+          memory: 512M # Reserva 256MB de RAM para o container
     environment:
       - DB_HOST=${MYSQL_HOST:-localhost}
       - DB_USER=${MYSQL_USER:-root}
@@ -51,18 +58,18 @@ services:
       - whaticket
     restart: always
 
-# Uncomment and configure if you want to use MySQL within the container
-#  mysql:
-#    image: ${MYSQL_ENGINE:-mariadb}:${MYSQL_VERSION:-10.6}
-#    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
-#    volumes:
-#      - ./.docker/data/:/var/lib/mysql
-#    environment:
-#      - MYSQL_DATABASE=${MYSQL_DATABASE:-whaticket}
-#      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-strongpassword}
-#      - TZ=${TZ:-America/Fortaleza}
-#    ports:
-#      - "${MYSQL_PORT:-3306}:3306"
-#    networks:
-#      - whaticket
-#    restart: always
+  # Uncomment and configure if you want to use MySQL within the container
+  mysql:
+    image: ${MYSQL_ENGINE:-mariadb}:${MYSQL_VERSION:-10.6}
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
+    volumes:
+      - ./.docker/data/:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-whaticket}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-strongpassword}
+      - TZ=${TZ:-America/Fortaleza}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    networks:
+      - whaticket
+    restart: always

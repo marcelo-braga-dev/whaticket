@@ -211,9 +211,9 @@ const TicketListItem = ({ ticket }) => {
 									)}
 								</Typography>
 							)}
-							{ticket.whatsappId && (
+							{/* {ticket.whatsappId && (
 								<div className={classes.userTag} title={i18n.t("ticketsList.connectionTitle")}>{ticket.whatsapp?.name}</div>
-							)}
+							)} */}
 						</span>
 					}
 					secondary={

@@ -1,16 +1,21 @@
-import React, {useState, useEffect, useReducer, useContext} from "react";
+import React, { useState, useEffect, useReducer, useContext } from "react";
 import openSocket from "../../services/socket-io";
 
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import Paper from "@material-ui/core/Paper";
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 import TicketListItem from "../TicketListItem";
 import TicketsListSkeleton from "../TicketsListSkeleton";
 
 import useTickets from "../../hooks/useTickets";
-import {i18n} from "../../translate/i18n";
-import {AuthContext} from "../../context/Auth/AuthContext";
+import { i18n } from "../../translate/i18n";
+import { AuthContext } from "../../context/Auth/AuthContext";
+import { Stack, Typography } from "@mui/material";
+import Badge from "@material-ui/core/Badge";
+import { green } from "@material-ui/core/colors";
 
 const useStyles = makeStyles(theme => ({
     ticketsListWrapper: {
@@ -68,6 +73,15 @@ const useStyles = makeStyles(theme => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+    },
+    newMessagesCount: {
+        alignSelf: "center",
+        marginRight: 8,
+        // marginLeft: "auto",
+    },
+    badgeStyle: {
+        color: "white",
+        backgroundColor: green[500],
     },
 }));
 
@@ -153,19 +167,20 @@ const reducer = (state, action) => {
 };
 
 const TicketsList = (props) => {
-    const {status, searchParam, showAll, selectedQueueIds, updateCount, style} =
+    const { status, searchParam, showAll, selectedQueueIds, updateCount, style } =
         props;
     const classes = useStyles();
     const [pageNumber, setPageNumber] = useState(1);
+    const [naoLidas, setNaoLidas] = useState(true);
     const [ticketsList, dispatch] = useReducer(reducer, []);
-    const {user} = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        dispatch({type: "RESET"});
+        dispatch({ type: "RESET" });
         setPageNumber(1);
     }, [status, searchParam, dispatch, showAll, selectedQueueIds]);
 
-    const {tickets, hasMore, loading} = useTickets({
+    const { tickets, hasMore, loading } = useTickets({
         pageNumber,
         searchParam,
         status,
@@ -215,11 +230,11 @@ const TicketsList = (props) => {
             }
 
             if (data.action === "update" && notBelongsToUserQueues(data.ticket)) {
-                dispatch({type: "DELETE_TICKET", payload: data.ticket.id});
+                dispatch({ type: "DELETE_TICKET", payload: data.ticket.id });
             }
 
             if (data.action === "delete") {
-                dispatch({type: "DELETE_TICKET", payload: data.ticketId});
+                dispatch({ type: "DELETE_TICKET", payload: data.ticketId });
             }
         });
 
@@ -260,13 +275,25 @@ const TicketsList = (props) => {
     const handleScroll = e => {
         if (!hasMore || loading) return;
 
-        const {scrollTop, scrollHeight, clientHeight} = e.currentTarget;
+        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
 
         if (scrollHeight - (scrollTop + 100) < clientHeight) {
             e.currentTarget.scrollTop = scrollTop - 100;
             loadMore();
         }
     };
+
+    const handleMensages = () => {
+        setNaoLidas(e => !e)
+    }
+    const ticketsFiltered = ticketsList.filter((ticket) => {
+        if (user.profile === 'user') {
+            return ticket.userId === user.id;
+        }
+        return true;
+    })
+        .filter((ticket) => (ticket.isGroup === false))
+        .filter((ticket) => (naoLidas ? ticket.unreadMessages > 0 : true))
 
     return (
         <Paper className={classes.ticketsListWrapper} style={style}>
@@ -277,27 +304,50 @@ const TicketsList = (props) => {
                 className={classes.ticketsList}
                 onScroll={handleScroll}
             >
-                <List style={{paddingTop: 0}}>
+                <Stack margin={2} direction="row" justifyContent="flex-end">
+                    <FormControlLabel control={<Switch onChange={handleMensages} checked={naoLidas} />} label={<Badge
+                        className={classes.newMessagesCount}
+                        badgeContent={ticketsList
+                            .filter(ticket => ticket.unreadMessages > 0)
+                            .filter((ticket) => {
+                                if (user.profile === 'user') {
+                                    return ticket.userId === user.id;
+                                }
+                                return true;
+                            })
+                            .filter((ticket) => (ticket.isGroup === false))
+                            .length}
+                        classes={{
+                            badge: classes.badgeStyle,
+                        }}
+                    >
+                        <Typography variant="body1">Não Lidas</Typography>
+                    </Badge>} />
+                </Stack>
+
+                <List style={{ paddingTop: 0 }}>
                     {ticketsList.length === 0 && !loading ? (
                         <div className={classes.noTicketsDiv}>
-							<span className={classes.noTicketsTitle}>
-								{i18n.t("ticketsList.noTicketsTitle")}
-							</span>
+                            <span className={classes.noTicketsTitle}>
+                                {i18n.t("ticketsList.noTicketsTitle")}
+                            </span>
                             <p className={classes.noTicketsText}>
                                 {i18n.t("ticketsList.noTicketsMessage")}
                             </p>
                         </div>
                     ) : (
                         <>
-                            {ticketsList.map(ticket => (
-                                <TicketListItem ticket={ticket} key={ticket.id}/>
-                            ))}
+                            {ticketsFiltered
+                                .map((ticket) => (
+                                    <TicketListItem ticket={ticket} key={ticket.id} />
+                                ))}
                         </>
                     )}
-                    {loading && <TicketsListSkeleton/>}
+                    {loading && <TicketsListSkeleton />}
                 </List>
             </Paper>
         </Paper>
+
     );
 };
 

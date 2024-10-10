@@ -14,9 +14,7 @@ import {
   Menu,
 } from "@material-ui/core";
 
-import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 
 import MainListItems from "./MainListItems";
 import NotificationsPopOver from "../components/NotificationsPopOver";
@@ -230,16 +228,10 @@ const LoggedInLayout = ({ children }) => {
           </IconButton> */}
           {/*<WhatsAppIcon/>*/}
 
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            sx={{ paddingTop: 20 }}
-            className={classes.title}
-          >
+
+          <Typography className={classes.title}>
             <img
-              style={{ paddingTop: 2, maxHeight: 40 }}
+              style={{ paddingTop: 0, maxHeight: 30 }}
               alt="logo"
               src="/assets/logo.png"
             />
@@ -255,7 +247,7 @@ const LoggedInLayout = ({ children }) => {
               aria-haspopup="true"
               onClick={handleMenu}
             >
-              <PersonGear color="black" size={30} />
+              <PersonGear color="black" size={20} />
             </IconButton>
             <Menu
               id="menu-appbar"

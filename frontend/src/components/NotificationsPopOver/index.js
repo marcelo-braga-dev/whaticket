@@ -12,7 +12,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
 import Badge from "@material-ui/core/Badge";
-import ChatIcon from "@material-ui/icons/Chat";
 
 import TicketListItem from "../TicketListItem";
 import { i18n } from "../../translate/i18n";
@@ -200,7 +199,7 @@ const NotificationsPopOver = () => {
         color="inherit"
       >
         <Badge badgeContent={notifications.length} color="secondary">
-          <Chat color="black" />
+          <Chat color="black" size={20} />
         </Badge>
       </IconButton>
       <Popover
