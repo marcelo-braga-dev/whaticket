@@ -292,7 +292,7 @@ const TicketsList = (props) => {
         }
         return true;
     })
-        .filter((ticket) => (ticket.isGroup === false))
+        // .filter((ticket) => (ticket.isGroup === false))
         .filter((ticket) => (naoLidas ? ticket.unreadMessages > 0 : true))
 
     return (
@@ -315,7 +315,7 @@ const TicketsList = (props) => {
                                 }
                                 return true;
                             })
-                            .filter((ticket) => (ticket.isGroup === false))
+                            // .filter((ticket) => (ticket.isGroup === false))
                             .length}
                         classes={{
                             badge: classes.badgeStyle,

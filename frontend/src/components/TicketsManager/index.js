@@ -282,6 +282,18 @@ const TicketsManager = () => {
                                 }
                                 value={"pending"}
                             />}
+                            {/* {isAdmin && <Tab
+                                label={
+                                    <Badge
+                                        className={classes.badge}
+                                        badgeContent={pendingCount}
+                                        color="secondary"
+                                    >
+                                        Grupos
+                                    </Badge>
+                                }
+                                value={"grups"}
+                            />} */}
                         </Tabs>
                     )}
                 />
@@ -315,6 +327,12 @@ const TicketsManager = () => {
                                 updateCount={(val) => setPendingCount(val)}
                                 style={applyPanelStyle("pending")}
                             />
+                            {/* <TicketsList
+                                status="pending"
+                                selectedQueueIds={selectedQueueIds}
+                                updateCount={(val) => setPendingCount(val)}
+                                style={applyPanelStyle("grups")}
+                            /> */}
                         </>
                     ) : (
                         <TicketsList
