@@ -171,7 +171,7 @@ const TicketsList = (props) => {
         props;
     const classes = useStyles();
     const [pageNumber, setPageNumber] = useState(1);
-    const [naoLidas, setNaoLidas] = useState(true);
+    const [naoLidas, setNaoLidas] = useState(false);
     const [ticketsList, dispatch] = useReducer(reducer, []);
     const { user } = useContext(AuthContext);
 
