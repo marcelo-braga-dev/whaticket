@@ -286,6 +286,7 @@ const TicketsList = (props) => {
     const handleMensages = () => {
         setNaoLidas(e => !e)
     }
+
     const ticketsFiltered = ticketsList.filter((ticket) => {
         if (user.profile === 'user') {
             return ticket.userId === user.id;
@@ -337,7 +338,7 @@ const TicketsList = (props) => {
                         </div>
                     ) : (
                         <>
-                            {ticketsFiltered
+                            {ticketsList
                                 .map((ticket) => (
                                     <TicketListItem ticket={ticket} key={ticket.id} />
                                 ))}
