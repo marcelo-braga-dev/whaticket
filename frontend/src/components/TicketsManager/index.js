@@ -299,7 +299,7 @@ const TicketsManager = () => {
                 />
 
                 <Paper className={classes.ticketsWrapper}>
-                    <Paper square elevation={0} className={classes.ticketOptionsBox}>
+                    {/* <Paper square elevation={0} className={classes.ticketOptionsBox}>
                         <div className={classes.serachInputWrapper}>
                             <SearchIcon className={classes.searchIcon} />
                             <InputBase
@@ -310,37 +310,37 @@ const TicketsManager = () => {
                                 onChange={handleSearch}
                             />
                         </div>
-                    </Paper>
+                    </Paper> */}
 
-                    {searchParam === "" ? (
-                        <>
-                            <TicketsList
-                                status="open"
-                                showAll={showAllTickets}
-                                selectedQueueIds={selectedQueueIds}
-                                updateCount={(val) => setOpenCount(val)}
-                                style={applyPanelStyle("open")}
-                            />
-                            <TicketsList
-                                status="pending"
-                                selectedQueueIds={selectedQueueIds}
-                                updateCount={(val) => setPendingCount(val)}
-                                style={applyPanelStyle("pending")}
-                            />
-                            {/* <TicketsList
+                    {/* {searchParam == "" ? ( */}
+                    <>
+                        <TicketsList
+                            status="open"
+                            showAll={showAllTickets}
+                            selectedQueueIds={selectedQueueIds}
+                            updateCount={(val) => setOpenCount(val)}
+                            style={applyPanelStyle("open")}
+                        />
+                        <TicketsList
+                            status="pending"
+                            selectedQueueIds={selectedQueueIds}
+                            updateCount={(val) => setPendingCount(val)}
+                            style={applyPanelStyle("pending")}
+                        />
+                        {/* <TicketsList
                                 status="pending"
                                 selectedQueueIds={selectedQueueIds}
                                 updateCount={(val) => setPendingCount(val)}
                                 style={applyPanelStyle("grups")}
                             /> */}
-                        </>
-                    ) : (
+                    </>
+                    {/* ) : (
                         <TicketsList
                             searchParam={searchParam}
                             showAll={true}
                             selectedQueueIds={selectedQueueIds}
                         />
-                    )}
+                    )} */}
                 </Paper>
             </TabPanel>
 
