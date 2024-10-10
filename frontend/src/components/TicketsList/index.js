@@ -4,8 +4,6 @@ import openSocket from "../../services/socket-io";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import Paper from "@material-ui/core/Paper";
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
 
 import TicketListItem from "../TicketListItem";
 import TicketsListSkeleton from "../TicketsListSkeleton";
@@ -13,9 +11,6 @@ import TicketsListSkeleton from "../TicketsListSkeleton";
 import useTickets from "../../hooks/useTickets";
 import { i18n } from "../../translate/i18n";
 import { AuthContext } from "../../context/Auth/AuthContext";
-import { Stack, Typography } from "@mui/material";
-import Badge from "@material-ui/core/Badge";
-import { green } from "@material-ui/core/colors";
 
 const useStyles = makeStyles(theme => ({
     ticketsListWrapper: {
@@ -73,15 +68,6 @@ const useStyles = makeStyles(theme => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-    },
-    newMessagesCount: {
-        alignSelf: "center",
-        marginRight: 8,
-        // marginLeft: "auto",
-    },
-    badgeStyle: {
-        color: "white",
-        backgroundColor: green[500],
     },
 }));
 
@@ -171,7 +157,6 @@ const TicketsList = (props) => {
         props;
     const classes = useStyles();
     const [pageNumber, setPageNumber] = useState(1);
-    const [naoLidas, setNaoLidas] = useState(false);
     const [ticketsList, dispatch] = useReducer(reducer, []);
     const { user } = useContext(AuthContext);
 
@@ -283,19 +268,6 @@ const TicketsList = (props) => {
         }
     };
 
-    const handleMensages = () => {
-        setNaoLidas(e => !e)
-    }
-
-    const ticketsFiltered = ticketsList.filter((ticket) => {
-        if (user.profile === 'user') {
-            return ticket.userId === user.id;
-        }
-        return true;
-    })
-        // .filter((ticket) => (ticket.isGroup === false))
-        .filter((ticket) => (naoLidas ? ticket.unreadMessages > 0 : true))
-
     return (
         <Paper className={classes.ticketsListWrapper} style={style}>
             <Paper
@@ -305,27 +277,6 @@ const TicketsList = (props) => {
                 className={classes.ticketsList}
                 onScroll={handleScroll}
             >
-                {/* <Stack margin={2} direction="row" justifyContent="flex-end">
-                    <FormControlLabel control={<Switch onChange={handleMensages} checked={naoLidas} />} label={<Badge
-                        className={classes.newMessagesCount}
-                        badgeContent={ticketsList
-                            .filter(ticket => ticket.unreadMessages > 0)
-                            .filter((ticket) => {
-                                if (user.profile === 'user') {
-                                    return ticket.userId === user.id;
-                                }
-                                return true;
-                            })
-                            // .filter((ticket) => (ticket.isGroup === false))
-                            .length}
-                        classes={{
-                            badge: classes.badgeStyle,
-                        }}
-                    >
-                        <Typography variant="body1">Não Lidas</Typography>
-                    </Badge>} />
-                </Stack> */}
-
                 <List style={{ paddingTop: 0 }}>
                     {ticketsList.length === 0 && !loading ? (
                         <div className={classes.noTicketsDiv}>
@@ -338,17 +289,15 @@ const TicketsList = (props) => {
                         </div>
                     ) : (
                         <>
-                            {ticketsList
-                                .map((ticket) => (
-                                    <TicketListItem ticket={ticket} key={ticket.id} />
-                                ))}
+                            {ticketsList.map(ticket => (
+                                <TicketListItem ticket={ticket} key={ticket.id} />
+                            ))}
                         </>
                     )}
                     {loading && <TicketsListSkeleton />}
                 </List>
             </Paper>
         </Paper>
-
     );
 };
 
