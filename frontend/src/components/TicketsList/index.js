@@ -304,7 +304,7 @@ const TicketsList = (props) => {
                 className={classes.ticketsList}
                 onScroll={handleScroll}
             >
-                <Stack margin={2} direction="row" justifyContent="flex-end">
+                {/* <Stack margin={2} direction="row" justifyContent="flex-end">
                     <FormControlLabel control={<Switch onChange={handleMensages} checked={naoLidas} />} label={<Badge
                         className={classes.newMessagesCount}
                         badgeContent={ticketsList
@@ -323,7 +323,7 @@ const TicketsList = (props) => {
                     >
                         <Typography variant="body1">Não Lidas</Typography>
                     </Badge>} />
-                </Stack>
+                </Stack> */}
 
                 <List style={{ paddingTop: 0 }}>
                     {ticketsList.length === 0 && !loading ? (

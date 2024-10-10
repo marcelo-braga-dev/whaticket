@@ -270,7 +270,7 @@ const TicketsManager = () => {
                                 }
                                 value={"open"}
                             />
-                            {isAdmin && <Tab
+                            <Tab
                                 label={
                                     <Badge
                                         className={classes.badge}
@@ -281,7 +281,7 @@ const TicketsManager = () => {
                                     </Badge>
                                 }
                                 value={"pending"}
-                            />}
+                            />
                             {/* {isAdmin && <Tab
                                 label={
                                     <Badge
@@ -352,11 +352,11 @@ const TicketsManager = () => {
                 />
             </TabPanel>
             <TabPanel value={tab} name="search" className={classes.ticketsWrapper}>
-                {/* <TicketsList
+                <TicketsList
                     searchParam={searchParam}
                     showAll={true}
                     selectedQueueIds={selectedQueueIds}
-                /> */}
+                />
             </TabPanel>
         </Paper>
     );
