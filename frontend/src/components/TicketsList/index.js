@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useContext } from "react";
+import React, { useState, useEffect, useReducer, useContext, useMemo } from "react";
 import openSocket from "../../services/socket-io";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -12,7 +12,11 @@ import useTickets from "../../hooks/useTickets";
 import { i18n } from "../../translate/i18n";
 import { AuthContext } from "../../context/Auth/AuthContext";
 
-const useStyles = makeStyles(theme => ({
+import { Stack, Typography, Switch, FormControlLabel } from "@mui/material";
+import Badge from "@material-ui/core/Badge";
+import { green } from "@material-ui/core/colors";
+
+const useStyles = makeStyles((theme) => ({
     ticketsListWrapper: {
         position: "relative",
         display: "flex",
@@ -22,45 +26,24 @@ const useStyles = makeStyles(theme => ({
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
     },
-
     ticketsList: {
         flex: 1,
         overflowY: "scroll",
         ...theme.scrollbarStyles,
         borderTop: "2px solid rgba(0, 0, 0, 0.12)",
     },
-
-    ticketsListHeader: {
-        color: "rgb(67, 83, 105)",
-        zIndex: 2,
-        backgroundColor: "white",
-        borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-
-    ticketsCount: {
-        fontWeight: "normal",
-        color: "rgb(104, 121, 146)",
-        marginLeft: "8px",
-        fontSize: "14px",
-    },
-
     noTicketsText: {
         textAlign: "center",
         color: "rgb(104, 121, 146)",
         fontSize: "14px",
         lineHeight: "1.4",
     },
-
     noTicketsTitle: {
         textAlign: "center",
         fontSize: "16px",
         fontWeight: "600",
         margin: "0px",
     },
-
     noTicketsDiv: {
         display: "flex",
         height: "100px",
@@ -69,86 +52,64 @@ const useStyles = makeStyles(theme => ({
         alignItems: "center",
         justifyContent: "center",
     },
+    newMessagesCount: {
+        alignSelf: "center",
+        marginRight: 8,
+    },
+    badgeStyle: {
+        color: "white",
+        backgroundColor: green[500],
+    },
 }));
 
+// Correção do reducer para garantir imutabilidade
 const reducer = (state, action) => {
-    if (action.type === "LOAD_TICKETS") {
-        const newTickets = action.payload;
-
-        newTickets.forEach(ticket => {
-            const ticketIndex = state.findIndex(t => t.id === ticket.id);
-            if (ticketIndex !== -1) {
-                state[ticketIndex] = ticket;
-                if (ticket.unreadMessages > 0) {
-                    state.unshift(state.splice(ticketIndex, 1)[0]);
+    switch (action.type) {
+        case "LOAD_TICKETS":
+            const newTickets = action.payload;
+            const updatedState = [...state];
+            newTickets.forEach((ticket) => {
+                const ticketIndex = updatedState.findIndex((t) => t.id === ticket.id);
+                if (ticketIndex !== -1) {
+                    updatedState[ticketIndex] = ticket;
+                    if (ticket.unreadMessages > 0) {
+                        updatedState.unshift(updatedState.splice(ticketIndex, 1)[0]);
+                    }
+                } else {
+                    updatedState.push(ticket);
                 }
-            } else {
-                state.push(ticket);
-            }
-        });
+            });
+            return updatedState;
 
-        return [...state];
-    }
+        case "RESET_UNREAD":
+            return state.map((t) =>
+                t.id === action.payload ? { ...t, unreadMessages: 0 } : t
+            );
 
-    if (action.type === "RESET_UNREAD") {
-        const ticketId = action.payload;
+        case "UPDATE_TICKET":
+            return state.map((t) =>
+                t.id === action.payload.id ? { ...action.payload } : t
+            );
 
-        const ticketIndex = state.findIndex(t => t.id === ticketId);
-        if (ticketIndex !== -1) {
-            state[ticketIndex].unreadMessages = 0;
-        }
+        case "UPDATE_TICKET_UNREAD_MESSAGES":
+            return [
+                { ...action.payload },
+                ...state.filter((t) => t.id !== action.payload.id),
+            ];
 
-        return [...state];
-    }
+        case "UPDATE_TICKET_CONTACT":
+            return state.map((t) =>
+                t.contactId === action.payload.id ? { ...t, contact: action.payload } : t
+            );
 
-    if (action.type === "UPDATE_TICKET") {
-        const ticket = action.payload;
+        case "DELETE_TICKET":
+            return state.filter((t) => t.id !== action.payload);
 
-        const ticketIndex = state.findIndex(t => t.id === ticket.id);
-        if (ticketIndex !== -1) {
-            state[ticketIndex] = ticket;
-        } else {
-            state.unshift(ticket);
-        }
+        case "RESET":
+            return [];
 
-        return [...state];
-    }
-
-    if (action.type === "UPDATE_TICKET_UNREAD_MESSAGES") {
-        const ticket = action.payload;
-
-        const ticketIndex = state.findIndex(t => t.id === ticket.id);
-        if (ticketIndex !== -1) {
-            state[ticketIndex] = ticket;
-            state.unshift(state.splice(ticketIndex, 1)[0]);
-        } else {
-            state.unshift(ticket);
-        }
-
-        return [...state];
-    }
-
-    if (action.type === "UPDATE_TICKET_CONTACT") {
-        const contact = action.payload;
-        const ticketIndex = state.findIndex(t => t.contactId === contact.id);
-        if (ticketIndex !== -1) {
-            state[ticketIndex].contact = contact;
-        }
-        return [...state];
-    }
-
-    if (action.type === "DELETE_TICKET") {
-        const ticketId = action.payload;
-        const ticketIndex = state.findIndex(t => t.id === ticketId);
-        if (ticketIndex !== -1) {
-            state.splice(ticketIndex, 1);
-        }
-
-        return [...state];
-    }
-
-    if (action.type === "RESET") {
-        return [];
+        default:
+            return state;
     }
 };
 
@@ -157,13 +118,14 @@ const TicketsList = (props) => {
         props;
     const classes = useStyles();
     const [pageNumber, setPageNumber] = useState(1);
+    const [naoLidas, setNaoLidas] = useState(false);
     const [ticketsList, dispatch] = useReducer(reducer, []);
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
         dispatch({ type: "RESET" });
         setPageNumber(1);
-    }, [status, searchParam, dispatch, showAll, selectedQueueIds]);
+    }, [status, searchParam, showAll, selectedQueueIds]);
 
     const { tickets, hasMore, loading } = useTickets({
         pageNumber,
@@ -184,11 +146,12 @@ const TicketsList = (props) => {
     useEffect(() => {
         const socket = openSocket();
 
-        const shouldUpdateTicket = ticket => !searchParam &&
+        const shouldUpdateTicket = (ticket) =>
+            !searchParam &&
             (!ticket.userId || ticket.userId === user?.id || showAll) &&
             (!ticket.queueId || selectedQueueIds.indexOf(ticket.queueId) > -1);
 
-        const notBelongsToUserQueues = ticket =>
+        const notBelongsToUserQueues = (ticket) =>
             ticket.queueId && selectedQueueIds.indexOf(ticket.queueId) === -1;
 
         socket.on("connect", () => {
@@ -199,7 +162,7 @@ const TicketsList = (props) => {
             }
         });
 
-        socket.on("ticket", data => {
+        socket.on("ticket", (data) => {
             if (data.action === "updateUnread") {
                 dispatch({
                     type: "RESET_UNREAD",
@@ -223,7 +186,7 @@ const TicketsList = (props) => {
             }
         });
 
-        socket.on("appMessage", data => {
+        socket.on("appMessage", (data) => {
             if (data.action === "create" && shouldUpdateTicket(data.ticket)) {
                 dispatch({
                     type: "UPDATE_TICKET_UNREAD_MESSAGES",
@@ -232,7 +195,7 @@ const TicketsList = (props) => {
             }
         });
 
-        socket.on("contact", data => {
+        socket.on("contact", (data) => {
             if (data.action === "update") {
                 dispatch({
                     type: "UPDATE_TICKET_CONTACT",
@@ -250,14 +213,13 @@ const TicketsList = (props) => {
         if (typeof updateCount === "function") {
             updateCount(ticketsList.length);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ticketsList]);
+    }, [ticketsList, updateCount]);
 
     const loadMore = () => {
-        setPageNumber(prevState => prevState + 1);
+        setPageNumber((prevState) => prevState + 1);
     };
 
-    const handleScroll = e => {
+    const handleScroll = (e) => {
         if (!hasMore || loading) return;
 
         const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
@@ -268,6 +230,18 @@ const TicketsList = (props) => {
         }
     };
 
+    const handleMensages = () => {
+        setNaoLidas((e) => !e);
+    };
+
+    // Usando useMemo para otimizar o cálculo de tickets filtrados
+    const ticketsFiltered = useMemo(() => {
+        return ticketsList
+            .filter((ticket) => (user.profile === "user" ? ticket.userId === user.id : true))
+            .filter((ticket) => !ticket.isGroup)
+            .filter((ticket) => (naoLidas ? ticket.unreadMessages > 0 : true));
+    }, [ticketsList, user, naoLidas]);
+
     return (
         <Paper className={classes.ticketsListWrapper} style={style}>
             <Paper
@@ -277,8 +251,25 @@ const TicketsList = (props) => {
                 className={classes.ticketsList}
                 onScroll={handleScroll}
             >
+                <Stack margin={2} direction="row" justifyContent="flex-end">
+                    <FormControlLabel
+                        control={<Switch onChange={handleMensages} checked={naoLidas} />}
+                        label={
+                            <Badge
+                                className={classes.newMessagesCount}
+                                badgeContent={ticketsFiltered.filter(
+                                    (ticket) => ticket.unreadMessages > 0
+                                ).length}
+                                classes={{ badge: classes.badgeStyle }}
+                            >
+                                <Typography variant="body1">Não Lidas</Typography>
+                            </Badge>
+                        }
+                    />
+                </Stack>
+
                 <List style={{ paddingTop: 0 }}>
-                    {ticketsList.length === 0 && !loading ? (
+                    {ticketsFiltered.length === 0 && !loading ? (
                         <div className={classes.noTicketsDiv}>
                             <span className={classes.noTicketsTitle}>
                                 {i18n.t("ticketsList.noTicketsTitle")}
@@ -288,11 +279,9 @@ const TicketsList = (props) => {
                             </p>
                         </div>
                     ) : (
-                        <>
-                            {ticketsList.map(ticket => (
-                                <TicketListItem ticket={ticket} key={ticket.id} />
-                            ))}
-                        </>
+                        ticketsFiltered.map((ticket) => (
+                            <TicketListItem ticket={ticket} key={ticket.id} />
+                        ))
                     )}
                     {loading && <TicketsListSkeleton />}
                 </List>
