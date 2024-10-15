@@ -170,9 +170,6 @@ export const getTicketsByStatus = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  // const status = "open";
-  console.log("GET STATUS");
-
   try {
     // Pegue o parâmetro de status da query string (padrão será "open")
     const { status = "open", userId } = req.query;
@@ -190,7 +187,7 @@ export const getTicketsByStatus = async (
     // Retorne a lista de tickets encontrados
     return res.status(200).json(tickets);
   } catch (error) {
-    console.error("ERROR:", error);
+    console.error("ERROR [getTicketsByStatus]:", error);
     return res
       .status(500)
       .json({ error: "Erro ao buscar notificação de status." });
