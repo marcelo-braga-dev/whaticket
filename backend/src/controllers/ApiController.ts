@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as Yup from "yup";
+import { Op } from "sequelize";
 import AppError from "../errors/AppError";
 import GetDefaultWhatsApp from "../helpers/GetDefaultWhatsApp";
 import SetTicketMessagesAsRead from "../helpers/SetTicketMessagesAsRead";
@@ -162,5 +163,36 @@ export const createContactApi = async (
     // Erro genérico para situações inesperadas
     console.error("Unexpected error:", err);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getTicketsByStatus = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  // const status = "open";
+  console.log("GET STATUS");
+
+  try {
+    // Pegue o parâmetro de status da query string (padrão será "open")
+    const { status = "open", userId } = req.query;
+
+    const tickets = await Ticket.findAll({
+      where: {
+        status: status,
+        userId: userId,
+        unreadMessages: {
+          [Op.gt]: 0
+        }
+      }
+    });
+
+    // Retorne a lista de tickets encontrados
+    return res.status(200).json(tickets);
+  } catch (error) {
+    console.error("ERROR:", error);
+    return res
+      .status(500)
+      .json({ error: "Erro ao buscar notificação de status." });
   }
 };

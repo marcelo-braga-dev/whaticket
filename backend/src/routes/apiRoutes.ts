@@ -26,4 +26,11 @@ ApiRoutes.post(
   ApiController.createContactApi
 );
 
+ApiRoutes.get(
+  "/tickets/status",
+  isAuthApi,
+  upload.array("medias"),
+  ApiController.getTicketsByStatus
+);
+
 export default ApiRoutes;
