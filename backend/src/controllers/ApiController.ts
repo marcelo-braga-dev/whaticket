@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import {Request, Response} from "express";
 import * as Yup from "yup";
-import { Op } from "sequelize";
+import {Op} from "sequelize";
 import AppError from "../errors/AppError";
 import GetDefaultWhatsApp from "../helpers/GetDefaultWhatsApp";
 import SetTicketMessagesAsRead from "../helpers/SetTicketMessagesAsRead";
@@ -77,8 +77,8 @@ const createContact = async (
 
 export const index = async (req: Request, res: Response): Promise<Response> => {
   const newContact: ContactData = req.body;
-  const { whatsappId }: WhatsappData = req.body;
-  const { body, quotedMsg }: MessageData = req.body;
+  const {whatsappId}: WhatsappData = req.body;
+  const {body, quotedMsg}: MessageData = req.body;
   const medias = req.files as Express.Multer.File[];
 
   newContact.number = newContact.number.replace("-", "").replace(" ", "");
@@ -100,11 +100,11 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
   if (medias) {
     await Promise.all(
       medias.map(async (media: Express.Multer.File) => {
-        await SendWhatsAppMedia({ body, media, ticket: contactAndTicket });
+        await SendWhatsAppMedia({body, media, ticket: contactAndTicket});
       })
     );
   } else {
-    await SendWhatsAppMessage({ body, ticket: contactAndTicket, quotedMsg });
+    await SendWhatsAppMessage({body, ticket: contactAndTicket, quotedMsg});
   }
 
   return res.send();
@@ -115,8 +115,8 @@ export const createContactApi = async (
   res: Response
 ): Promise<Response> => {
   const newContact: ContactData = req.body;
-  const { whatsappId }: WhatsappData = req.body;
-  const { userId } = req.body;
+  const {whatsappId}: WhatsappData = req.body;
+  const {userId} = req.body;
 
   const numero = `${newContact.number}`;
 
@@ -135,12 +135,12 @@ export const createContactApi = async (
     // Verificar se o usuário existe
     const user = await User.findByPk(userId);
     if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado" });
+      return res.status(404).json({message: "Usuário não encontrado"});
     }
 
     const ticket = await Ticket.findByPk(contactAndTicket.id);
     if (!ticket) {
-      return res.status(404).json({ message: "Ticket não encontrado" });
+      return res.status(404).json({message: "Ticket não encontrado"});
     }
 
     // Atribuir o ticket ao usuário e abrir o ticket
@@ -155,14 +155,14 @@ export const createContactApi = async (
   } catch (err: any) {
     // Capturando erros de validação ou de criação e enviando uma resposta de erro
     if (err instanceof Yup.ValidationError) {
-      return res.status(400).json({ message: err.message });
+      return res.status(400).json({message: err.message});
     }
     if (err instanceof AppError) {
-      return res.status(err.statusCode).json({ message: err.message });
+      return res.status(err.statusCode).json({message: err.message});
     }
     // Erro genérico para situações inesperadas
     console.error("Unexpected error:", err);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({message: "Internal server error"});
   }
 };
 
@@ -171,13 +171,21 @@ export const getTicketsByStatus = async (
   res: Response
 ): Promise<Response> => {
   try {
-    // Pegue o parâmetro de status da query string (padrão será "open")
-    const { status = "open", userId } = req.query;
+    const {
+      status = "open",
+      userId
+    } = req.query;
+
+    if (!userId) {
+      return res.status(400).json({error: "Vecê não está cadastrado."});
+    }
+
+    const userIdNumber = parseInt(userId as string, 10);
 
     const tickets = await Ticket.findAll({
       where: {
-        status: status,
-        userId: userId,
+        status: `${status}`,
+        userId: userIdNumber,
         unreadMessages: {
           [Op.gt]: 0
         }
@@ -190,6 +198,6 @@ export const getTicketsByStatus = async (
     console.error("ERROR [getTicketsByStatus]:", error);
     return res
       .status(500)
-      .json({ error: "Erro ao buscar notificação de status." });
+      .json({error: "Erro ao buscar notificação de status."});
   }
 };

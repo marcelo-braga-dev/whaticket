@@ -238,7 +238,7 @@ const TicketsList = (props) => {
     const ticketsFiltered = useMemo(() => {
         return ticketsList
             .filter((ticket) => (user.profile === "user" ? ticket.userId === user.id : true))
-            // .filter((ticket) => !ticket.isGroup)
+            .filter((ticket) => !ticket.isGroup)
             .filter((ticket) => (naoLidas ? ticket.unreadMessages > 0 : true));
     }, [ticketsList, user, naoLidas]);
 
