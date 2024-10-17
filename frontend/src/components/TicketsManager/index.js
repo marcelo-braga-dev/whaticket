@@ -163,7 +163,7 @@ const TicketsManager = () => {
                 onClose={(e) => setNewTicketModalOpen(false)}
             />
             <Paper elevation={0} square className={classes.tabsHeader}>
-                {isAdmin && <Tabs
+                <Tabs
                     value={tab}
                     onChange={handleChangeTab}
                     variant="fullWidth"
@@ -174,22 +174,23 @@ const TicketsManager = () => {
                     <Tab
                         value={"open"}
                         icon={<MoveToInboxIcon />}
-                        label={i18n.t("tickets.tabs.open.title")}
+                        label="CHAT"
                         classes={{ root: classes.tab }}
                     />
                     <Tab
-                        value={"closed"}
-                        icon={<CheckBoxIcon />}
-                        label={i18n.t("tickets.tabs.closed.title")}
+                        value={"search"}
+                        icon={<SearchIcon />}
+                        label={"Pesquisar"}
                         classes={{ root: classes.tab }}
                     />
-                    {/*<Tab*/}
-                    {/*    value={"search"}*/}
-                    {/*    icon={<SearchIcon/>}*/}
-                    {/*    label={i18n.t("tickets.tabs.search.title")}*/}
-                    {/*    classes={{root: classes.tab}}*/}
-                    {/*/>*/}
-                </Tabs>}
+                    {isAdmin &&
+                        <Tab
+                            value={"closed"}
+                            icon={<CheckBoxIcon />}
+                            label={"Finalizados"}
+                            classes={{ root: classes.tab }}
+                        />}
+                </Tabs>
             </Paper>
             <Paper square elevation={0} className={classes.ticketOptionsBox}>
                 {tab === "search" ? (
@@ -204,44 +205,43 @@ const TicketsManager = () => {
                         />
                     </div>
                 ) : (
-                    <>
-                        <Can
-                            role={user.profile}
-                            perform="tickets-manager:showall"
-                            yes={() => (
-                                <>
-                                    <Button
-                                        variant="outlined"
-                                        color="primary"
-                                        onClick={() => setNewTicketModalOpen(true)}
-                                    >
-                                        {i18n.t("ticketsManager.buttons.newTicket")}
-                                    </Button>
-                                    <FormControlLabel
-                                        label={i18n.t("tickets.buttons.showAll")}
-                                        labelPlacement="start"
-                                        control={
-                                            <Switch
-                                                size="small"
-                                                checked={showAllTickets}
-                                                onChange={() =>
-                                                    setShowAllTickets((prevState) => !prevState)
-                                                }
-                                                name="showAllTickets"
-                                                color="primary"
-                                            />
-                                        }
-                                    />
-                                    <TicketsQueueSelect
-                                        style={{ marginLeft: 6 }}
-                                        selectedQueueIds={selectedQueueIds}
-                                        userQueues={user?.queues}
-                                        onChange={(values) => setSelectedQueueIds(values)}
-                                    />
-                                </>
-                            )}
-                        />
-                    </>
+                    <Can
+                        role={user.profile}
+                        perform="tickets-manager:showall"
+                        yes={() => (
+                            <>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={() => setNewTicketModalOpen(true)}
+                                >
+                                    {i18n.t("ticketsManager.buttons.newTicket")}
+                                </Button>
+                                <FormControlLabel
+                                    label={i18n.t("tickets.buttons.showAll")}
+                                    labelPlacement="start"
+                                    style={{ marginInline: 30 }}
+                                    control={
+                                        <Switch
+                                            size="small"
+                                            checked={showAllTickets}
+                                            onChange={() =>
+                                                setShowAllTickets((prevState) => !prevState)
+                                            }
+                                            name="showAllTickets"
+                                            color="primary"
+                                        />
+                                    }
+                                />
+                                {/* <TicketsQueueSelect
+                                    style={{ marginLeft: 6 }}
+                                    selectedQueueIds={selectedQueueIds}
+                                    userQueues={user?.queues}
+                                    onChange={(values) => setSelectedQueueIds(values)}
+                                /> */}
+                            </>
+                        )}
+                    />
                 )}
 
             </Paper>
@@ -254,16 +254,12 @@ const TicketsManager = () => {
                     variant="fullWidth"
                 >
                     <Tab
-                        label={
-                            <Badge
-                                className={classes.badge}
-                                badgeContent={openCount}
-                                color="primary"
-                            >
-                                {i18n.t("ticketsList.assignedHeader")}
-                            </Badge>
-                        }
+                        label={"Conversas"}
                         value={"open"}
+                    />
+                    <Tab
+                        label={"GRUPOS"}
+                        value={"grups"}
                     />
                     {isAdmin && <Tab
                         label={
@@ -281,10 +277,19 @@ const TicketsManager = () => {
                 <Paper className={classes.ticketsWrapper}>
                     <TicketsList
                         status="open"
+                        tabOpen={tabOpen}
                         showAll={showAllTickets}
                         selectedQueueIds={selectedQueueIds}
                         updateCount={(val) => setOpenCount(val)}
                         style={applyPanelStyle("open")}
+                    />
+                    <TicketsList
+                        status="open"
+                        tabOpen={tabOpen}
+                        showAll={showAllTickets}
+                        selectedQueueIds={selectedQueueIds}
+                        updateCount={(val) => setOpenCount(val)}
+                        style={applyPanelStyle("grups")}
                     />
                     <TicketsList
                         status="pending"

@@ -114,7 +114,7 @@ const reducer = (state, action) => {
 };
 
 const TicketsList = (props) => {
-    const { status, searchParam, showAll, selectedQueueIds, updateCount, style } =
+    const { status, searchParam, showAll, selectedQueueIds, updateCount, style, tabOpen } =
         props;
     const classes = useStyles();
     const [pageNumber, setPageNumber] = useState(1);
@@ -238,9 +238,20 @@ const TicketsList = (props) => {
     const ticketsFiltered = useMemo(() => {
         return ticketsList
             .filter((ticket) => (user.profile === "user" ? ticket.userId === user.id : true))
-            .filter((ticket) => !ticket.isGroup)
+            .filter((ticket) => {
+                if (status === "pending") {
+                    return true;
+                }
+                if (tabOpen === "grups") {
+                    return ticket.isGroup;
+                } else {
+                    return !ticket.isGroup;
+                }
+            })
             .filter((ticket) => (naoLidas ? ticket.unreadMessages > 0 : true));
-    }, [ticketsList, user, naoLidas]);
+    }, [ticketsList, user, naoLidas, tabOpen, status]);
+
+
 
     return (
         <Paper className={classes.ticketsListWrapper} style={style}>
