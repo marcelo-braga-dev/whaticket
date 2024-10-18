@@ -11,13 +11,13 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
-    deploy:
-      resources:
-        limits:
-          cpus: "6" # Permitir que use até 1.5 núcleos
-          memory: 10G # Limitar a 1.5GB de RAM
-        reservations:
-          memory: 2048M # Reserva 256MB de RAM para o container
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: "6" # Permitir que use até 1.5 núcleos
+#          memory: 10G # Limitar a 1.5GB de RAM
+#        reservations:
+#          memory: 2048M # Reserva 256MB de RAM para o container
     environment:
       - DB_HOST=${MYSQL_HOST:-localhost}
       - DB_USER=${MYSQL_USER:-root}
