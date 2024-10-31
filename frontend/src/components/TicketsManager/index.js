@@ -105,10 +105,10 @@ const TicketsManager = () => {
     const [openCount, setOpenCount] = useState(0);
     const [pendingCount, setPendingCount] = useState(0);
 
-    const userQueueIds = user.queues.map((q) => q.id);
+    const userQueueIds = user?.queues?.map((q) => q.id);
     const [selectedQueueIds, setSelectedQueueIds] = useState(userQueueIds || []);
 
-    const isAdmin = user.profile.toUpperCase() === "ADMIN"
+    const isAdmin = user?.profile?.toUpperCase() === "ADMIN"
 
     useEffect(() => {
         if (isAdmin) {

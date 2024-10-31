@@ -16,14 +16,18 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 const app = express();
 
-const allowedOrigins = process.env.FRONTEND_URL?.split(',') || [];
+const allowedOrigins = process.env.FRONTEND_URL
+  ?.split('#')[0]
+  .split(',')
+  .map(url => url.trim()) 
+  .filter(url => url !== '') || [];
 
 const corsOptions = {
   origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error(`URL: [${origin}] não permitido pelo CORS, são permitidos [${allowedOrigins}]\n\n`));
     }
   },
   credentials: true,

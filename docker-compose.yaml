@@ -1,23 +1,15 @@
-version: '3.8'
-
 networks:
-  whaticket:
+  default:
+    name: ${NETWORK_NAME:-app_network}
     driver: bridge
 
 services:
 
   backend:
-    container_name: whaticket_backend
+    container_name: ${APP_NAME:-whaticket}_backend
     build:
       context: ./backend
       dockerfile: ./Dockerfile
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: "6" # Permitir que use até 1.5 núcleos
-#          memory: 10G # Limitar a 1.5GB de RAM
-#        reservations:
-#          memory: 2048M # Reserva 256MB de RAM para o container
     environment:
       - DB_HOST=${MYSQL_HOST:-localhost}
       - DB_USER=${MYSQL_USER:-root}
@@ -34,17 +26,15 @@ services:
     volumes:
       - ./backend/public/:/usr/src/app/public/
       - ./backend/.wwebjs_auth/:/usr/src/app/.wwebjs_auth/
-    networks:
-      - whaticket
     restart: always
 
   frontend:
-    container_name: whaticket_frontend
+    container_name: ${APP_NAME:-whaticket}_frontend
     build:
       context: ./frontend
       dockerfile: ./Dockerfile
     environment:
-      - URL_BACKEND=backend:3000
+      - URL_BACKEND=${APP_NAME:-whaticket}_backend:3000
       - REACT_APP_BACKEND_URL=${BACKEND_URL:-http://localhost}:${PROXY_PORT:-8080}/
       - FRONTEND_SERVER_NAME=${FRONTEND_SERVER_NAME}
       - BACKEND_SERVER_NAME=${BACKEND_SERVER_NAME}
@@ -54,22 +44,4 @@ services:
     volumes:
       - ./ssl/certs/:/etc/nginx/ssl/
       - ./ssl/www/:/var/www/letsencrypt/
-    networks:
-      - whaticket
-    restart: always
-
-  # Uncomment and configure if you want to use MySQL within the container
-  mysql:
-    image: ${MYSQL_ENGINE:-mariadb}:${MYSQL_VERSION:-10.6}
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
-    volumes:
-      - ./.docker/data/:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE:-whaticket}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-strongpassword}
-      - TZ=${TZ:-America/Fortaleza}
-    ports:
-      - "${MYSQL_PORT:-3306}:3306"
-    networks:
-      - whaticket
     restart: always
