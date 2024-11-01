@@ -6,10 +6,10 @@ networks:
 services:
 
   backend:
-    container_name: ${CONTAINER_NAME:-whaticket}_backend
+    container_name: ${BACKEND_CONTAINER_NAME:-whaticket_backend}
     build:
       context: ./backend
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
     environment:
       - DB_HOST=${MYSQL_HOST:-localhost}
       - DB_USER=${MYSQL_USER:-root}
@@ -29,15 +29,15 @@ services:
     restart: always
 
   frontend:
-    container_name: ${CONTAINER_NAME:-whaticket}_frontend
+    container_name: ${FRONTEND_CONTAINER_NAME:-whaticket_frontend}
     build:
       context: ./frontend
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
     environment:
-      - URL_BACKEND=${CONTAINER_NAME:-whaticket}_backend:3000
+      - URL_BACKEND=${BACKEND_CONTAINER_NAME:-whaticket_backend}:3000
       - REACT_APP_BACKEND_URL=${BACKEND_URL:-http://localhost}:${PROXY_PORT:-8080}/
-      - FRONTEND_SERVER_NAME=${FRONTEND_SERVER_NAME}
-      - BACKEND_SERVER_NAME=${BACKEND_SERVER_NAME}
+      - FRONTEND_SERVER_NAME=${FRONTEND_SERVER_NAME:-frontend_server}
+      - BACKEND_SERVER_NAME=${BACKEND_SERVER_NAME:-backend_server}
     ports:
       - ${FRONTEND_PORT:-3000}:80
       - ${FRONTEND_SSL_PORT:-3001}:443
