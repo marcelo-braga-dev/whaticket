@@ -4,21 +4,10 @@ import { Link as RouterLink } from "react-router-dom";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import Divider from "@material-ui/core/Divider";
-import { Badge } from "@material-ui/core";
 
-import { i18n } from "../translate/i18n";
 import { WhatsAppsContext } from "../context/WhatsApp/WhatsAppsContext";
 import { AuthContext } from "../context/Auth/AuthContext";
 import { Can } from "../components/Can";
-import {
-  Whatsapp,
-  PersonVcard,
-  People,
-  Link,
-  Gear,
-} from "react-bootstrap-icons";
 
 function ListItemLink(props) {
   const { icon, primary, to, className } = props;
@@ -76,36 +65,36 @@ const MainListItems = (props) => {
         perform="drawer-admin-items:view"
         yes={() => (
           <>
-            <ListItemLink
+            {/* <ListItemLink
               to="/tickets"
               primary="Conversas"
               icon={<Whatsapp size={22} color="black" />}
-            />
-            <Divider />
-            <ListSubheader inset>
+            /> */}
+            {/* <Divider /> */}
+            {/* <ListSubheader inset>
               {i18n.t("mainDrawer.listItems.administration")}
-            </ListSubheader>
-            <ListItemLink
+            </ListSubheader> */}
+            {/* <ListItemLink
               to="/users"
               primary={i18n.t("mainDrawer.listItems.users")}
               icon={<People size={24} color="black" />}
-            />
+            /> */}
             {/* <ListItemLink
               to="/dashboard"
               primary="Dashboard"
               icon={<Grid size={24} color="black" />}
             /> */}
-            <ListItemLink
+            {/* <ListItemLink
               to="/contacts"
               primary={i18n.t("mainDrawer.listItems.contacts")}
               icon={<PersonVcard size={24} color="black" />}
-            />
+            /> */}
             {/* <ListItemLink
                             to="/quickAnswers"
                             primary={i18n.t("mainDrawer.listItems.quickAnswers")}
                             icon={<ChatText size={24} color="black"/>}
                         /> */}
-            <ListItemLink
+            {/* <ListItemLink
               to="/connections"
               primary={i18n.t("mainDrawer.listItems.connections")}
               icon={
@@ -113,17 +102,17 @@ const MainListItems = (props) => {
                   <Link size={24} color="black" />
                 </Badge>
               }
-            />
+            /> */}
             {/* <ListItemLink
                             to="/queues"
                             primary={i18n.t("mainDrawer.listItems.queues")}
                             icon={<Diagram3 size={24} color="black"/>}
                         /> */}
-            <ListItemLink
+            {/* <ListItemLink
               to="/settings"
               primary={i18n.t("mainDrawer.listItems.settings")}
               icon={<Gear size={24} color="black" />}
-            />
+            /> */}
           </>
         )}
       />

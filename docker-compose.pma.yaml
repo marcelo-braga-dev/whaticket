@@ -7,7 +7,11 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     environment:
       - PMA_HOSTS=mysql
+      - PMA_USER=${MYSQL_USER:-root}
+      - PMA_PASSWORD=${MYSQL_ROOT_PASSWORD:-strongpassword}
+      - SESSION_TIMEOUT=14400
       - UPLOAD_LIMIT=150M
+      - MEMORY_LIMIT=512M
     ports:
       - ${PMA_PORT:-9000}:80
     networks:

@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import uploadConfig from "../config/upload";
 
+import * as ContactApiController from "../controllers/Api/ContactApiController";
 import * as ApiController from "../controllers/ApiController";
 import * as UserController from "../controllers/UserController";
 import isAuthApi from "../middleware/isAuthApi";
@@ -31,6 +32,13 @@ ApiRoutes.get(
   isAuthApi,
   upload.array("medias"),
   ApiController.getTicketsByStatus
+);
+
+ApiRoutes.get(
+  "/contact",
+  isAuthApi,
+  upload.array("medias"),
+  ContactApiController.getContacts
 );
 
 export default ApiRoutes;

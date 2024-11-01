@@ -12,9 +12,10 @@ import useTickets from "../../hooks/useTickets";
 import { i18n } from "../../translate/i18n";
 import { AuthContext } from "../../context/Auth/AuthContext";
 
-import { Stack, Typography, Switch, FormControlLabel } from "@mui/material";
+import { Stack } from "@mui/material";
 import Badge from "@material-ui/core/Badge";
 import { green } from "@material-ui/core/colors";
+import Button from '@mui/material/Button';
 
 const useStyles = makeStyles((theme) => ({
     ticketsListWrapper: {
@@ -263,20 +264,16 @@ const TicketsList = (props) => {
                 onScroll={handleScroll}
             >
                 <Stack margin={2} direction="row" justifyContent="flex-end">
-                    <FormControlLabel
-                        control={<Switch onChange={handleMensages} checked={naoLidas} />}
-                        label={
-                            <Badge
-                                className={classes.newMessagesCount}
-                                badgeContent={ticketsFiltered.filter(
-                                    (ticket) => ticket.unreadMessages > 0
-                                ).length}
-                                classes={{ badge: classes.badgeStyle }}
-                            >
-                                <Typography variant="body1">Não Lidas</Typography>
-                            </Badge>
-                        }
-                    />
+                    <Badge
+                        className={classes.newMessagesCount}
+                        badgeContent={ticketsFiltered.filter(
+                            (ticket) => ticket.unreadMessages > 0
+                        ).length}
+                        classes={{ badge: classes.badgeStyle }}
+                    >
+                        <Button variant={naoLidas ? "contained" : "outlined"} size="small" onClick={handleMensages}>Não Lidas</Button>
+                    </Badge>
+
                 </Stack>
 
                 <List style={{ paddingTop: 0 }}>

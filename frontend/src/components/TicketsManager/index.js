@@ -10,18 +10,14 @@ import Badge from "@material-ui/core/Badge";
 import MoveToInboxIcon from "@material-ui/icons/MoveToInbox";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-
 import NewTicketModal from "../NewTicketModal";
 import TicketsList from "../TicketsList";
 import TabPanel from "../TabPanel";
 
 import { i18n } from "../../translate/i18n";
 import { AuthContext } from "../../context/Auth/AuthContext";
-import { Can } from "../Can";
-import TicketsQueueSelect from "../TicketsQueueSelect";
-import { Button } from "@material-ui/core";
+// import { Can } from "../Can";
+// import TicketsQueueSelect from "../TicketsQueueSelect";
 
 const useStyles = makeStyles((theme) => ({
     ticketsWrapper: {
@@ -192,7 +188,7 @@ const TicketsManager = () => {
                         />}
                 </Tabs>
             </Paper>
-            <Paper square elevation={0} className={classes.ticketOptionsBox}>
+            {tab === "search" && <Paper square elevation={0} className={classes.ticketOptionsBox}>
                 {tab === "search" ? (
                     <div className={classes.serachInputWrapper}>
                         <SearchIcon className={classes.searchIcon} />
@@ -204,57 +200,59 @@ const TicketsManager = () => {
                             onChange={handleSearch}
                         />
                     </div>
-                ) : (
-                    <Can
-                        role={user.profile}
-                        perform="tickets-manager:showall"
-                        yes={() => (
-                            <>
-                                <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={() => setNewTicketModalOpen(true)}
-                                >
-                                    {i18n.t("ticketsManager.buttons.newTicket")}
-                                </Button>
-                                <FormControlLabel
-                                    label={i18n.t("tickets.buttons.showAll")}
-                                    labelPlacement="start"
-                                    style={{ marginInline: 30 }}
-                                    control={
-                                        <Switch
-                                            size="small"
-                                            checked={showAllTickets}
-                                            onChange={() =>
-                                                setShowAllTickets((prevState) => !prevState)
-                                            }
-                                            name="showAllTickets"
-                                            color="primary"
-                                        />
-                                    }
-                                />
-                                {/* <TicketsQueueSelect
-                                    style={{ marginLeft: 6 }}
-                                    selectedQueueIds={selectedQueueIds}
-                                    userQueues={user?.queues}
-                                    onChange={(values) => setSelectedQueueIds(values)}
-                                /> */}
-                            </>
-                        )}
-                    />
+                ) : (<></>
+                    // <Can
+                    //     role={user.profile}
+                    //     perform="tickets-manager:showall"
+                    //     yes={() => (
+                    //         <>
+                    //             {/* <Button
+                    //                 variant="outlined"
+                    //                 color="primary"
+                    //                 onClick={() => setNewTicketModalOpen(true)}
+                    //             >
+                    //                 {i18n.t("ticketsManager.buttons.newTicket")}
+                    //             </Button> */}
+                    //             <FormControlLabel
+                    //                 label={i18n.t("tickets.buttons.showAll")}
+                    //                 labelPlacement="start"
+                    //                 style={{ marginInline: 30 }}
+                    //                 control={
+                    //                     <Switch
+                    //                         size="small"
+                    //                         checked={showAllTickets}
+                    //                         onChange={() =>
+                    //                             setShowAllTickets((prevState) => !prevState)
+                    //                         }
+                    //                         name="showAllTickets"
+                    //                         color="primary"
+                    //                     />
+                    //                 }
+                    //             />
+                    //             {/* <TicketsQueueSelect
+                    //                 style={{ marginLeft: 6 }}
+                    //                 selectedQueueIds={selectedQueueIds}
+                    //                 userQueues={user?.queues}
+                    //                 onChange={(values) => setSelectedQueueIds(values)}
+                    //             /> */}
+                    //         </>
+                    //     )}
+                    // />
                 )}
 
-            </Paper>
+            </Paper>}
+
             <TabPanel value={tab} name="open" className={classes.ticketsWrapper}>
                 <Tabs
                     value={tabOpen}
                     onChange={handleChangeTabOpen}
                     indicatorColor="primary"
                     textColor="primary"
-                    variant="fullWidth"
+                    variant="scrollable"
+                    scrollButtons="auto"
                 >
                     <Tab
-                        label={"Conversas"}
+                        label={"Chats"}
                         value={"open"}
                     />
                     <Tab

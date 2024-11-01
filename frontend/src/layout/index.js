@@ -1,31 +1,25 @@
 import React, { useState, useContext, useEffect } from "react";
-import clsx from "clsx";
 
 import {
   makeStyles,
-  Drawer,
   AppBar,
   Toolbar,
-  List,
   Typography,
-  Divider,
   MenuItem,
   IconButton,
   Menu,
 } from "@material-ui/core";
 
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-
-import MainListItems from "./MainListItems";
-import NotificationsPopOver from "../components/NotificationsPopOver";
+// import MainListItems from "./MainListItems";
+// import NotificationsPopOver from "../components/NotificationsPopOver";
 import UserModal from "../components/UserModal";
 import { AuthContext } from "../context/Auth/AuthContext";
 import BackdropLoading from "../components/BackdropLoading";
 import { i18n } from "../translate/i18n";
-import { Can } from "../components/Can";
+// import { Can } from "../components/Can";
 import { PersonGear } from "react-bootstrap-icons";
 
-const drawerWidth = 240;
+const drawerWidth = 0;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -170,7 +164,7 @@ const LoggedInLayout = ({ children }) => {
 
   return (
     <div className={classes.root}>
-      <Can
+      {/* <Can
         role={user.profile}
         perform="drawer-admin-items:view"
         yes={() => (
@@ -199,7 +193,7 @@ const LoggedInLayout = ({ children }) => {
             <Divider />
           </Drawer>
         )}
-      />
+      /> */}
       <UserModal
         open={userModalOpen}
         onClose={() => setUserModalOpen(false)}
@@ -207,11 +201,11 @@ const LoggedInLayout = ({ children }) => {
       />
       <AppBar
         position="absolute"
-        className={clsx(
-          classes.appBar,
-          drawerOpen && !(user.profile === "user") && classes.appBarShift
-        )}
-        color={process.env.NODE_ENV === "development" ? "inherit" : "primary"}
+      // className={clsx(
+      //   classes.appBar,
+      //   drawerOpen && !(user.profile === "user") && classes.appBarShift
+      // )}
+      // color={process.env.NODE_ENV === "development" ? "inherit" : "primary"}
       >
         <Toolbar variant="dense" className={classes.toolbar}>
           {/* <IconButton
