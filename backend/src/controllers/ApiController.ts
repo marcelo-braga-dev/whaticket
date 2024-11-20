@@ -35,7 +35,8 @@ interface ContactData {
 
 const createContact = async (
   whatsappId: number | undefined,
-  newContact: string
+  newContact: string,
+  name: string
 ) => {
   await CheckIsValidContact(newContact);
 
@@ -46,7 +47,7 @@ const createContact = async (
   const number = validNumber;
 
   const contactData = {
-    name: `${number}`,
+    name: `${name}`,
     number,
     profilePicUrl,
     isGroup: false
@@ -95,7 +96,7 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
     throw new AppError(err.message);
   }
 
-  const contactAndTicket = await createContact(whatsappId, newContact.number);
+  const contactAndTicket = await createContact(whatsappId, newContact.number, newContact.number);
 
   if (medias) {
     await Promise.all(
@@ -116,7 +117,9 @@ export const createContactApi = async (
 ): Promise<Response> => {
   const newContact: ContactData = req.body;
   const { whatsappId }: WhatsappData = req.body;
-  const { userId } = req.body;
+  const { userId, name } = req.body;
+
+  console.log(name)
 
   const numero = `${newContact.number}`;
 
@@ -130,7 +133,7 @@ export const createContactApi = async (
 
   try {
     await schema.validate(newContact);
-    const contactAndTicket = await createContact(whatsappId, newContact.number);
+    const contactAndTicket = await createContact(whatsappId, newContact.number, name);
 
     // Verificar se o usuário existe
     const user = await User.findByPk(userId);

@@ -41,6 +41,11 @@ class Contact extends Model<Contact> {
   @Column
   isGroup: boolean;
 
+  @AllowNull(true)
+  @Default(null)
+  @Column
+  leadId: number;
+
   @CreatedAt
   createdAt: Date;
 

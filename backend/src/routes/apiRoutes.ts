@@ -41,4 +41,18 @@ ApiRoutes.get(
   ContactApiController.getContacts
 );
 
+ApiRoutes.post(
+  "/contact-ticket",
+  isAuthApi,
+  upload.array("medias"),
+  ContactApiController.createContactAndTicket
+);
+
+ApiRoutes.post(
+  "/contacts/update-user",
+  isAuthApi,
+  upload.array("medias"),
+  ContactApiController.updateUser
+);
+
 export default ApiRoutes;
