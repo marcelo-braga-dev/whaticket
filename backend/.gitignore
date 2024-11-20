@@ -14,5 +14,5 @@ yarn-error.log
 /coverage.data
 /coverage/
 
-.wwebjs_auth/
+.wwebjs_auth/*
 .wwebjs_cache/
