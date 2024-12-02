@@ -1,4 +1,4 @@
-FROM node:14 AS build-deps
+FROM node:18 AS build-deps
 
 RUN apt-get update && apt-get install -y wget
 
