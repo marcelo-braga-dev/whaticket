@@ -91,7 +91,7 @@ const Ticket = ({ chat }) => {
     const delayDebounceFn = setTimeout(() => {
       const fetchTicket = async () => {
         try {
-          const { data } = await api.get("/tickets/" + ticketId);
+          const { data } = await api.get(`/tickets/${ticketId}`);
 
           setContact(data.contact);
           setTicket(data);

@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useContext, useRef} from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 //import "emoji-mart/css/emoji-mart.css";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 // import {Picker} from "emoji-mart";
 import MicRecorder from "mic-recorder-to-mp3";
 import clsx from "clsx";
@@ -8,11 +8,11 @@ import clsx from "clsx";
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {green} from "@material-ui/core/colors";
+import { green } from "@material-ui/core/colors";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVert from "@material-ui/icons/MoreVert";
@@ -31,17 +31,17 @@ import {
     Switch,
 } from "@material-ui/core";
 
-import {ptBr} from "./i18n"
+import { ptBr } from "./i18n"
 
-import {i18n} from "../../translate/i18n";
+import { i18n } from "../../translate/i18n";
 import api from "../../services/api";
 import RecordingTimer from "./RecordingTimer";
-import {ReplyMessageContext} from "../../context/ReplyingMessage/ReplyingMessageContext";
-import {AuthContext} from "../../context/Auth/AuthContext";
-import {useLocalStorage} from "../../hooks/useLocalStorage";
+import { ReplyMessageContext } from "../../context/ReplyingMessage/ReplyingMessageContext";
+import { AuthContext } from "../../context/Auth/AuthContext";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 import toastError from "../../errors/toastError";
 
-const Mp3Recorder = new MicRecorder({bitRate: 128});
+const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 
 const useStyles = makeStyles((theme) => ({
     mainWrapper: {
@@ -205,9 +205,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const MessageInput = ({ticketStatus}) => {
+const MessageInput = ({ ticketStatus }) => {
     const classes = useStyles();
-    const {ticketId} = useParams();
+    const { ticketId } = useParams();
 
     const [medias, setMedias] = useState([]);
     const [inputMessage, setInputMessage] = useState("");
@@ -218,9 +218,9 @@ const MessageInput = ({ticketStatus}) => {
     const [typeBar, setTypeBar] = useState(false);
     const inputRef = useRef();
     const [anchorEl, setAnchorEl] = useState(null);
-    const {setReplyingMessage, replyingMessage} =
+    const { setReplyingMessage, replyingMessage } =
         useContext(ReplyMessageContext);
-    const {user} = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
 
     const [signMessage, setSignMessage] = useLocalStorage("signOption", true);
 
@@ -294,7 +294,7 @@ const MessageInput = ({ticketStatus}) => {
     const handleSendMessage = async () => {
 
         if (inputMessage.trim() === "") return;
-        console.log('MENSAGEM ENVIADA')
+        console.log('Enviando mensagem')
         setLoading(true);
 
         const message = {
@@ -307,6 +307,7 @@ const MessageInput = ({ticketStatus}) => {
             quotedMsg: replyingMessage,
         };
 
+        // Notifica envio de msg no crm
         window.parent.postMessage(
             {
                 type: 'messageSent',
@@ -333,7 +334,7 @@ const MessageInput = ({ticketStatus}) => {
     const handleStartRecording = async () => {
         setLoading(true);
         try {
-            await navigator.mediaDevices.getUserMedia({audio: true});
+            await navigator.mediaDevices.getUserMedia({ audio: true });
             await Mp3Recorder.start();
             setRecording(true);
             setLoading(false);
@@ -346,8 +347,8 @@ const MessageInput = ({ticketStatus}) => {
     const handleLoadQuickAnswer = async (value) => {
         if (value && value.indexOf("/") === 0) {
             try {
-                const {data} = await api.get("/quickAnswers/", {
-                    params: {searchParam: inputMessage.substring(1)},
+                const { data } = await api.get("/quickAnswers/", {
+                    params: { searchParam: inputMessage.substring(1) },
                 });
                 setQuickAnswer(data.quickAnswers);
                 if (data.quickAnswers.length > 0) {
@@ -428,16 +429,16 @@ const MessageInput = ({ticketStatus}) => {
         return (
             <div className={classes.replyginMsgWrapper}>
                 <div className={classes.replyginMsgContainer}>
-          <span
-              className={clsx(classes.replyginContactMsgSideColor, {
-                  [classes.replyginSelfMsgSideColor]: !message.fromMe,
-              })}
-          ></span>
+                    <span
+                        className={clsx(classes.replyginContactMsgSideColor, {
+                            [classes.replyginSelfMsgSideColor]: !message.fromMe,
+                        })}
+                    ></span>
                     <div className={classes.replyginMsgBody}>
                         {!message.fromMe && (
                             <span className={classes.messageContactName}>
-                {message.contact?.name}
-              </span>
+                                {message.contact?.name}
+                            </span>
                         )}
                         {message.body}
                     </div>
@@ -448,7 +449,7 @@ const MessageInput = ({ticketStatus}) => {
                     disabled={loading || ticketStatus !== "open"}
                     onClick={() => setReplyingMessage(null)}
                 >
-                    <ClearIcon className={classes.sendMessageIcons}/>
+                    <ClearIcon className={classes.sendMessageIcons} />
                 </IconButton>
             </div>
         );
@@ -462,18 +463,18 @@ const MessageInput = ({ticketStatus}) => {
                     component="span"
                     onClick={(e) => setMedias([])}
                 >
-                    <CancelIcon className={classes.sendMessageIcons}/>
+                    <CancelIcon className={classes.sendMessageIcons} />
                 </IconButton>
 
                 {loading ? (
                     <div>
-                        <CircularProgress className={classes.circleLoading}/>
+                        <CircularProgress className={classes.circleLoading} />
                     </div>
                 ) : (
                     <span>
-            {medias[0]?.name}
-                        {/* <img src={media.preview} alt=""></img> */}
-          </span>
+                        {medias[0]?.name}
+                        {/* <img src={medias[0]?.preview} alt=""></img> */}
+                    </span>
                 )}
                 <IconButton
                     aria-label="send-upload"
@@ -481,7 +482,7 @@ const MessageInput = ({ticketStatus}) => {
                     onClick={handleUploadMedia}
                     disabled={loading}
                 >
-                    <SendIcon className={classes.sendMessageIcons}/>
+                    <SendIcon className={classes.sendMessageIcons} />
                 </IconButton>
             </Paper>
         );
@@ -497,7 +498,7 @@ const MessageInput = ({ticketStatus}) => {
                             disabled={loading || recording || ticketStatus !== "open"}
                             onClick={(e) => setShowEmoji((prevState) => !prevState)}
                         >
-                            <MoodIcon className={classes.sendMessageIcons}/>
+                            <MoodIcon className={classes.sendMessageIcons} />
                         </IconButton>
                         {showEmoji ? (
                             <div className={classes.emojiBox}>
@@ -528,11 +529,11 @@ const MessageInput = ({ticketStatus}) => {
                                 component="span"
                                 disabled={loading || recording || ticketStatus !== "open"}
                             >
-                                <AttachFileIcon className={classes.sendMessageIcons}/>
+                                <AttachFileIcon className={classes.sendMessageIcons} />
                             </IconButton>
                         </label>
                         {isAdmin && <FormControlLabel
-                            style={{marginRight: 7, color: "gray"}}
+                            style={{ marginRight: 7, color: "gray" }}
                             label={i18n.t("messagesInput.signMessage")}
                             labelPlacement="start"
                             control={
@@ -570,7 +571,7 @@ const MessageInput = ({ticketStatus}) => {
                                     disabled={loading || recording || ticketStatus !== "open"}
                                     onClick={(e) => setShowEmoji((prevState) => !prevState)}
                                 >
-                                    <MoodIcon className={classes.sendMessageIcons}/>
+                                    <MoodIcon className={classes.sendMessageIcons} />
                                 </IconButton>
                             </MenuItem>
                             <MenuItem onClick={handleMenuItemClick}>
@@ -588,13 +589,13 @@ const MessageInput = ({ticketStatus}) => {
                                         component="span"
                                         disabled={loading || recording || ticketStatus !== "open"}
                                     >
-                                        <AttachFileIcon className={classes.sendMessageIcons}/>
+                                        <AttachFileIcon className={classes.sendMessageIcons} />
                                     </IconButton>
                                 </label>
                             </MenuItem>
                             <MenuItem onClick={handleMenuItemClick}>
                                 <FormControlLabel
-                                    style={{marginRight: 7, color: "gray"}}
+                                    style={{ marginRight: 7, color: "gray" }}
                                     label={i18n.t("messagesInput.signMessage")}
                                     labelPlacement="start"
                                     control={
@@ -666,7 +667,7 @@ const MessageInput = ({ticketStatus}) => {
                             onClick={handleSendMessage}
                             disabled={loading}
                         >
-                            <SendIcon className={classes.sendMessageIcons}/>
+                            <SendIcon className={classes.sendMessageIcons} />
                         </IconButton>
                     ) : recording ? (
                         <div className={classes.recorderWrapper}>
@@ -677,14 +678,14 @@ const MessageInput = ({ticketStatus}) => {
                                 disabled={loading}
                                 onClick={handleCancelAudio}
                             >
-                                <HighlightOffIcon className={classes.cancelAudioIcon}/>
+                                <HighlightOffIcon className={classes.cancelAudioIcon} />
                             </IconButton>
                             {loading ? (
                                 <div>
-                                    <CircularProgress className={classes.audioLoading}/>
+                                    <CircularProgress className={classes.audioLoading} />
                                 </div>
                             ) : (
-                                <RecordingTimer/>
+                                <RecordingTimer />
                             )}
 
                             <IconButton
@@ -693,7 +694,7 @@ const MessageInput = ({ticketStatus}) => {
                                 onClick={handleUploadAudio}
                                 disabled={loading}
                             >
-                                <CheckCircleOutlineIcon className={classes.sendAudioIcon}/>
+                                <CheckCircleOutlineIcon className={classes.sendAudioIcon} />
                             </IconButton>
                         </div>
                     ) : (
@@ -703,7 +704,7 @@ const MessageInput = ({ticketStatus}) => {
                             disabled={loading || ticketStatus !== "open"}
                             onClick={handleStartRecording}
                         >
-                            <MicIcon className={classes.sendMessageIcons}/>
+                            <MicIcon className={classes.sendMessageIcons} />
                         </IconButton>
                     )}
                 </div>

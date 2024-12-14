@@ -255,10 +255,6 @@ const TicketsManager = () => {
                         label={"Chats"}
                         value={"open"}
                     />
-                    <Tab
-                        label={"GRUPOS"}
-                        value={"grups"}
-                    />
                     {isAdmin && <Tab
                         label={
                             <Badge
@@ -271,6 +267,10 @@ const TicketsManager = () => {
                         }
                         value={"pending"}
                     />}
+                    <Tab
+                        label={"GRUPOS"}
+                        value={"grups"}
+                    />
                 </Tabs>
                 <Paper className={classes.ticketsWrapper}>
                     <TicketsList

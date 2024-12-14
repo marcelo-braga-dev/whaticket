@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import Badge from "@material-ui/core/Badge";
+import Chip from '@mui/material/Chip';
 
 import { i18n } from "../../translate/i18n";
 
@@ -157,7 +158,6 @@ const TicketListItem = ({ ticket }) => {
 				dense
 				button
 				onClick={e => {
-					if (ticket.status === "pending") return;
 					handleSelectTicket(ticket.id);
 				}}
 				selected={ticketId && +ticketId === ticket.id}
@@ -197,6 +197,7 @@ const TicketListItem = ({ ticket }) => {
 									color="primary"
 								/>
 							)}
+
 							{ticket.lastMessage && (
 								<Typography
 									className={classes.lastMessageTime}
@@ -204,6 +205,18 @@ const TicketListItem = ({ ticket }) => {
 									variant="body2"
 									color="textSecondary"
 								>
+									<span style={{
+										border: '1px solid blue',
+										color: 'blue',
+										borderRadius: 5,
+										paddingBlock: 1,
+										paddingInline: 4,
+										marginInline: 10,
+										fontSize: 10
+									}}>
+										{ticket.whatsapp?.name}
+									</span>
+
 									{isSameDay(parseISO(ticket.updatedAt), new Date()) ? (
 										<>{format(parseISO(ticket.updatedAt), "HH:mm")}</>
 									) : (
@@ -211,12 +224,9 @@ const TicketListItem = ({ ticket }) => {
 									)}
 								</Typography>
 							)}
-							{/* {ticket.whatsappId && (
-								<div className={classes.userTag} title={i18n.t("ticketsList.connectionTitle")}>{ticket.whatsapp?.name}</div>
-							)} */}
 						</span>
 					}
-					secondary={
+					secondary={<>
 						<span className={classes.contactNameWrapper}>
 							<Typography
 								className={classes.contactLastMessage}
@@ -240,9 +250,10 @@ const TicketListItem = ({ ticket }) => {
 								}}
 							/>
 						</span>
+					</>
 					}
 				/>
-				{ticket.status === "pending" && (
+				{/* {ticket.status === "pending" && (
 					<ButtonWithSpinner
 						color="primary"
 						variant="contained"
@@ -253,7 +264,7 @@ const TicketListItem = ({ ticket }) => {
 					>
 						{i18n.t("ticketsList.buttons.accept")}
 					</ButtonWithSpinner>
-				)}
+				)} */}
 			</ListItem>
 			<Divider variant="inset" component="li" />
 		</React.Fragment>

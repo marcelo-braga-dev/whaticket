@@ -25,12 +25,14 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
   const { ticketId } = req.params;
   const { pageNumber } = req.query as IndexQuery;
 
+  const userId = +req.user.id;
+
   const { count, messages, ticket, hasMore } = await ListMessagesService({
     pageNumber,
     ticketId
   });
 
-  SetTicketMessagesAsRead(ticket);
+  if ((ticket.status !== 'pending') && ticket.userId == userId) SetTicketMessagesAsRead(ticket);
 
   return res.json({ count, messages, ticket, hasMore });
 };

@@ -333,7 +333,7 @@ const MessagesList = ({ ticketId, isGroup }) => {
     const delayDebounceFn = setTimeout(() => {
       const fetchMessages = async () => {
         try {
-          const { data } = await api.get("/messages/" + ticketId, {
+          const { data } = await api.get(`/messages/${ticketId}`, {
             params: { pageNumber },
           });
 
@@ -465,7 +465,7 @@ const MessagesList = ({ ticketId, isGroup }) => {
         )
       } else return (<></>)
     }*/
-    else if ( /^.*\.(jpe?g|png|gif)?$/i.exec(message.mediaUrl) && message.mediaType === "image") {
+    else if (/^.*\.(jpe?g|png|gif)?$/i.exec(message.mediaUrl) && message.mediaType === "image") {
       return <ModalImageCors imageUrl={message.mediaUrl} />;
     } else if (message.mediaType === "audio") {
       return <Audio url={message.mediaUrl} />
