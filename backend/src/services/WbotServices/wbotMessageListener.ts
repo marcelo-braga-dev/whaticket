@@ -66,15 +66,15 @@ const verifyQuotedMessage = async (
 
 // generate random id string for file names, function got from: https://stackoverflow.com/a/1349426/1851801
 function makeRandomId(length: number) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
 }
 
 const verifyMediaMessage = async (
@@ -96,7 +96,7 @@ const verifyMediaMessage = async (
     const ext = media.mimetype.split("/")[1].split(";")[0];
     media.filename = `${randomId}-${new Date().getTime()}.${ext}`;
   } else {
-    media.filename = media.filename.split('.').slice(0,-1).join('.')+'.'+randomId+'.'+media.filename.split('.').slice(-1);
+    media.filename = media.filename.split('.').slice(0, -1).join('.') + '.' + randomId + '.' + media.filename.split('.').slice(-1);
   }
 
   try {
@@ -273,6 +273,8 @@ const handleMessage = async (
     }
 
     const chat = await msg.getChat();
+
+    chat.isGroup = chat.id && (chat.id.server == "g.us");
 
     if (chat.isGroup) {
       let msgGroupContact;
