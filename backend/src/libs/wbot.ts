@@ -14,6 +14,9 @@ const sessions: Session[] = [];
 
 const syncUnreadMessages = async (wbot: Session) => {
   const chats = await wbot.getChats();
+  // console.log('======== START syncUnreadMessages =============')
+  // console.log('ENTRADA WBOT', chats)
+  // console.log('======== END syncUnreadMessages ==============')
 
   /* eslint-disable no-restricted-syntax */
   /* eslint-disable no-await-in-loop */
@@ -43,11 +46,11 @@ export const initWbot = async (whatsapp: Whatsapp): Promise<Session> => {
         sessionCfg = JSON.parse(whatsapp.session);
       }
 
-      const args:String = process.env.CHROME_ARGS || "";
+      const args: String = process.env.CHROME_ARGS || "";
 
       const wbot: Session = new Client({
         session: sessionCfg,
-        authStrategy: new LocalAuth({clientId: 'bd_'+whatsapp.id}),
+        authStrategy: new LocalAuth({ clientId: 'bd_' + whatsapp.id }),
         puppeteer: {
           executablePath: process.env.CHROME_BIN || undefined,
           // @ts-ignore

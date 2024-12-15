@@ -24,6 +24,9 @@ import { Tooltip } from "@material-ui/core";
 import { AuthContext } from "../../context/Auth/AuthContext";
 import toastError from "../../errors/toastError";
 
+import { TbUsers, TbUsersGroup } from "react-icons/tb";
+import { Box, Stack } from "@mui/material";
+
 const useStyles = makeStyles(theme => ({
 	ticket: {
 		position: "relative",
@@ -165,9 +168,11 @@ const TicketListItem = ({ ticket }) => {
 					[classes.pendingTicket]: ticket.status === "pending",
 				})}
 			>
+				{console.log(ticket)}
 				<ListItemAvatar>
-					<Avatar src={ticket?.contact?.profilePicUrl} />
+					<Avatar src={ticket?.contact?.profilePicUrl} style={{ width: 45, height: 45 }} />
 				</ListItemAvatar>
+
 				<ListItemText
 					disableTypography
 					primary={
@@ -181,70 +186,54 @@ const TicketListItem = ({ ticket }) => {
 							>
 								{ticket.contact.name}
 							</Typography>
+
 							{ticket.status === "closed" && (
 								<Badge
 									className={classes.closedBadge}
-									badgeContent={"closed"}
+									badgeContent={"finalizado"}
 									color="primary"
 								/>
 							)}
 
 							{ticket.lastMessage && (
-								<Typography
-									className={classes.lastMessageTime}
-									component="span"
-									variant="body2"
-									color="textSecondary"
-								>
-									<span
-										style={{
-											border: '1px solid blue',
-											color: 'blue',
-											borderRadius: '5px',
-											paddingBlock: '1px',
-											paddingInline: '4px',
-											marginInline: '10px',
-											fontSize: '10px',
-											whiteSpace: 'nowrap',
-										}}
-									>
-										{ticket.whatsapp?.name}
-									</span>
+								<Stack direction="row" alignItems="center" spacing={1} >
 
-									{isSameDay(parseISO(ticket.updatedAt), new Date()) ? (
-										<>{format(parseISO(ticket.updatedAt), "HH:mm")}</>
-									) : (
-										<>{format(parseISO(ticket.updatedAt), "dd/MM/yyyy")}</>
-									)}
-								</Typography>
+									{ticket.isGroup && <TbUsers color="brown" size={16} />}
+
+									<Typography
+										className={classes.lastMessageTime}
+										component="span"
+										variant="body2"
+										color="textSecondary"
+									>
+										{isSameDay(parseISO(ticket.updatedAt), new Date()) ? (
+											<>{format(parseISO(ticket.updatedAt), "HH:mm")}</>
+										) : (
+											<>{format(parseISO(ticket.updatedAt), "dd/MM/yyyy")}</>
+										)}
+									</Typography>
+								</Stack>
 							)}
 						</span>
 					}
 					secondary={<>
-						<Tooltip
-							arrow
-							placement="top"
-							title={ticket?.lastMessage}
-						>
-							<span className={classes.contactNameWrapper}>
-								<Typography
-									className={classes.contactLastMessage}
-									noWrap
-									component="span"
-									variant="body2"
-									color="textSecondary"
-								>
+						{/* ultma mensagem */}
+						<span className={classes.contactNameWrapper} style={{ marginBlockEnd: 5 }}>
+							<Typography
+								className={classes.contactLastMessage}
+								noWrap
+								component="span"
+								variant="body2"
+								color="textSecondary"
+							>
+								{ticket.lastMessage ? (
+									<MarkdownWrapper>{ticket.lastMessage}</MarkdownWrapper>
+								) : (
+									<br />
+								)}
+							</Typography>
 
-									<span>
-										{ticket.lastMessage ? (
-											<MarkdownWrapper>{ticket.lastMessage}</MarkdownWrapper>
-										) : (
-											<br />
-										)}
-									</span>
-
-								</Typography>
-
+							<Stack direction="row" alignItems="center" spacing={2} marginInlineEnd={1}>
 								<Badge
 									className={classes.newMessagesCount}
 									badgeContent={ticket.unreadMessages}
@@ -252,8 +241,42 @@ const TicketListItem = ({ ticket }) => {
 										badge: classes.badgeStyle,
 									}}
 								/>
-							</span>
-						</Tooltip>
+							</Stack>
+						</span>
+
+						{/* legendas */}
+						<span className={classes.contactNameWrapper}>
+							<Typography
+								className={classes.contactLastMessage}
+								noWrap
+								// component="span"
+								variant="caption"
+								color="textSecondary"
+								style={{ fontStyle: 'italic' }}
+							>
+								Atendente: {ticket.user?.name ?? '-'}
+							</Typography>
+
+							<Stack direction="row" alignItems="center" spacing={1}>
+								<Typography
+									className={classes.lastMessageTime}
+									component="span"
+									variant="body2"
+									color="textSecondary"
+									style={{
+										border: '1px solid blue',
+										color: 'blue',
+										borderRadius: '5px',
+										paddingBlock: '1px',
+										paddingInline: '4px',
+										fontSize: '10px',
+										whiteSpace: 'nowrap',
+									}}
+								>
+									{ticket.whatsapp?.name}
+								</Typography>
+							</Stack>
+						</span>
 					</>
 					}
 				/>

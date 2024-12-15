@@ -154,6 +154,14 @@ const verifyMessage = async (
   await ticket.update({ lastMessage: msg.type === "location" ? msg.location.description ? "Localization - " + msg.location.description.split('\\n')[0] : "Localization" : msg.body });
 
   await CreateMessageService({ messageData });
+
+  // console.log('========== INIT verifyMessage ==========')
+  // // console.log('\n\n\nPAGE', window.location.pathname)
+  // // console.log('\n\n\n msg \n', msg)
+  // // console.log('\n\n\n ticket \n', ticket)
+  // // console.log('\n\n\n contact \n', contact)
+  // console.log('\n\n\n messageData \n', messageData)
+  // console.log('========== END verifyMessage ==========')
 };
 
 const prepareLocation = (msg: WbotMessage): WbotMessage => {
@@ -275,6 +283,7 @@ const handleMessage = async (
     const chat = await msg.getChat();
 
     chat.isGroup = chat.id && (chat.id.server == "g.us");
+    // console.log(chat)
 
     if (chat.isGroup) {
       let msgGroupContact;

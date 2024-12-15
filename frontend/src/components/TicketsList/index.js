@@ -120,6 +120,7 @@ const TicketsList = (props) => {
     const classes = useStyles();
     const [pageNumber, setPageNumber] = useState(1);
     const [naoLidas, setNaoLidas] = useState(false);
+    const [mostrarGrupos, setMostrarGrupos] = useState(false);
     const [ticketsList, dispatch] = useReducer(reducer, []);
     const { user } = useContext(AuthContext);
 
@@ -235,6 +236,10 @@ const TicketsList = (props) => {
         setNaoLidas((e) => !e);
     };
 
+    const handleMostrarGrupos = () => {
+        setMostrarGrupos((e) => !e);
+    };
+
     // Usando useMemo para otimizar o cálculo de tickets filtrados
     const ticketsFiltered = useMemo(() => {
         return ticketsList
@@ -243,14 +248,14 @@ const TicketsList = (props) => {
                 if (status === "pending") {
                     return true;
                 }
-                if (tabOpen === "grups") {
-                    return ticket.isGroup;
-                } else {
-                    return !ticket.isGroup;
+                else {
+                    return true;
                 }
             })
+            .filter((ticket) => (mostrarGrupos ? ticket.isGroup > 0 : true))
             .filter((ticket) => (naoLidas ? ticket.unreadMessages > 0 : true));
-    }, [ticketsList, user, naoLidas, tabOpen, status]);
+
+    }, [ticketsList, user, naoLidas, tabOpen, status, mostrarGrupos]);
 
     const countUnread = ticketsFiltered.filter(
         (ticket) => ticket.unreadMessages > 0
@@ -265,7 +270,15 @@ const TicketsList = (props) => {
                 className={classes.ticketsList}
                 onScroll={handleScroll}
             >
-                <Stack margin={2} direction="row" justifyContent="flex-end">
+                <Stack margin={2} direction="row" justifyContent="flex-end" spacing={2}>
+                    <Chip
+                        label="Grupos"
+                        color="info"
+                        size="small"
+                        variant={mostrarGrupos ? 'filled' : 'outlined'}
+                        onClick={handleMostrarGrupos}
+                        style={{ cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
+                    />
                     <Badge
                         className={classes.newMessagesCount}
                         badgeContent={countUnread}

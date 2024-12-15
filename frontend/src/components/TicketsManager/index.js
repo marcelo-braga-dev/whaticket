@@ -262,15 +262,15 @@ const TicketsManager = () => {
                                 badgeContent={pendingCount}
                                 color="secondary"
                             >
-                                {i18n.t("ticketsList.pendingHeader")}
+                                Aguardando
                             </Badge>
                         }
                         value={"pending"}
                     />}
-                    <Tab
+                    {/* <Tab
                         label={"GRUPOS"}
                         value={"grups"}
-                    />
+                    /> */}
                 </Tabs>
                 <Paper className={classes.ticketsWrapper}>
                     <TicketsList
@@ -281,14 +281,14 @@ const TicketsManager = () => {
                         updateCount={(val) => setOpenCount(val)}
                         style={applyPanelStyle("open")}
                     />
-                    <TicketsList
+                    {/* <TicketsList
                         status="open"
                         tabOpen={tabOpen}
                         showAll={showAllTickets}
                         selectedQueueIds={selectedQueueIds}
                         updateCount={(val) => setOpenCount(val)}
                         style={applyPanelStyle("grups")}
-                    />
+                    /> */}
                     <TicketsList
                         status="pending"
                         selectedQueueIds={selectedQueueIds}

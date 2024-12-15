@@ -7,6 +7,7 @@ import Message from "../../models/Message";
 import Queue from "../../models/Queue";
 import ShowUserService from "../UserServices/ShowUserService";
 import Whatsapp from "../../models/Whatsapp";
+import User from "../../models/User";
 
 interface Request {
   searchParam?: string;
@@ -46,6 +47,11 @@ const ListTicketsService = async ({
       model: Contact,
       as: "contact",
       attributes: ["id", "name", "number", "profilePicUrl"]
+    },
+    {
+      model: User,
+      as: "user",
+      attributes: ["id", "name"]
     },
     {
       model: Queue,
