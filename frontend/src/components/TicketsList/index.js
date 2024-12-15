@@ -15,7 +15,7 @@ import { AuthContext } from "../../context/Auth/AuthContext";
 import { Stack } from "@mui/material";
 import Badge from "@material-ui/core/Badge";
 import { green } from "@material-ui/core/colors";
-import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 
 const useStyles = makeStyles((theme) => ({
     ticketsListWrapper: {
@@ -252,7 +252,9 @@ const TicketsList = (props) => {
             .filter((ticket) => (naoLidas ? ticket.unreadMessages > 0 : true));
     }, [ticketsList, user, naoLidas, tabOpen, status]);
 
-
+    const countUnread = ticketsFiltered.filter(
+        (ticket) => ticket.unreadMessages > 0
+    ).length
 
     return (
         <Paper className={classes.ticketsListWrapper} style={style}>
@@ -266,14 +268,18 @@ const TicketsList = (props) => {
                 <Stack margin={2} direction="row" justifyContent="flex-end">
                     <Badge
                         className={classes.newMessagesCount}
-                        badgeContent={ticketsFiltered.filter(
-                            (ticket) => ticket.unreadMessages > 0
-                        ).length}
+                        badgeContent={countUnread}
                         classes={{ badge: classes.badgeStyle }}
                     >
-                        <Button variant={naoLidas ? "contained" : "outlined"} size="small" onClick={handleMensages}>Não Lidas</Button>
+                        <Chip
+                            label="Não Lidas"
+                            color="success"
+                            size="small"
+                            variant={naoLidas ? 'filled' : 'outlined'}
+                            onClick={handleMensages}
+                            style={{ cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
+                        />
                     </Badge>
-
                 </Stack>
 
                 <List style={{ paddingTop: 0 }}>

@@ -165,16 +165,6 @@ const TicketListItem = ({ ticket }) => {
 					[classes.pendingTicket]: ticket.status === "pending",
 				})}
 			>
-				<Tooltip
-					arrow
-					placement="right"
-					title={ticket.queue?.name || "Sem fila"}
-				>
-					<span
-						style={{ backgroundColor: ticket.queue?.color || "#7C7C7C" }}
-						className={classes.ticketQueueColor}
-					></span>
-				</Tooltip>
 				<ListItemAvatar>
 					<Avatar src={ticket?.contact?.profilePicUrl} />
 				</ListItemAvatar>
@@ -187,6 +177,7 @@ const TicketListItem = ({ ticket }) => {
 								component="span"
 								variant="body2"
 								color="textPrimary"
+								style={{ fontWeight: ticket.unreadMessages ? 800 : 400 }}
 							>
 								{ticket.contact.name}
 							</Typography>
@@ -205,15 +196,18 @@ const TicketListItem = ({ ticket }) => {
 									variant="body2"
 									color="textSecondary"
 								>
-									<span style={{
-										border: '1px solid blue',
-										color: 'blue',
-										borderRadius: 5,
-										paddingBlock: 1,
-										paddingInline: 4,
-										marginInline: 10,
-										fontSize: 10
-									}}>
+									<span
+										style={{
+											border: '1px solid blue',
+											color: 'blue',
+											borderRadius: '5px',
+											paddingBlock: '1px',
+											paddingInline: '4px',
+											marginInline: '10px',
+											fontSize: '10px',
+											whiteSpace: 'nowrap',
+										}}
+									>
 										{ticket.whatsapp?.name}
 									</span>
 
@@ -227,29 +221,39 @@ const TicketListItem = ({ ticket }) => {
 						</span>
 					}
 					secondary={<>
-						<span className={classes.contactNameWrapper}>
-							<Typography
-								className={classes.contactLastMessage}
-								noWrap
-								component="span"
-								variant="body2"
-								color="textSecondary"
-							>
-								{ticket.lastMessage ? (
-									<MarkdownWrapper>{ticket.lastMessage}</MarkdownWrapper>
-								) : (
-									<br />
-								)}
-							</Typography>
+						<Tooltip
+							arrow
+							placement="top"
+							title={ticket?.lastMessage}
+						>
+							<span className={classes.contactNameWrapper}>
+								<Typography
+									className={classes.contactLastMessage}
+									noWrap
+									component="span"
+									variant="body2"
+									color="textSecondary"
+								>
 
-							<Badge
-								className={classes.newMessagesCount}
-								badgeContent={ticket.unreadMessages}
-								classes={{
-									badge: classes.badgeStyle,
-								}}
-							/>
-						</span>
+									<span>
+										{ticket.lastMessage ? (
+											<MarkdownWrapper>{ticket.lastMessage}</MarkdownWrapper>
+										) : (
+											<br />
+										)}
+									</span>
+
+								</Typography>
+
+								<Badge
+									className={classes.newMessagesCount}
+									badgeContent={ticket.unreadMessages}
+									classes={{
+										badge: classes.badgeStyle,
+									}}
+								/>
+							</span>
+						</Tooltip>
 					</>
 					}
 				/>
