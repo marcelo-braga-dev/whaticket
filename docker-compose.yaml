@@ -42,6 +42,6 @@ services:
       - ${FRONTEND_PORT:-3000}:80
       - ${FRONTEND_SSL_PORT:-3001}:443
     volumes:
-      - ./ssl/certs/:/etc/nginx/ssl/
-      - ./ssl/www/:/var/www/letsencrypt/
+      #- ./ssl/certs/:/etc/nginx/ssl/
+      #- ./ssl/www/:/var/www/letsencrypt/
     restart: always
